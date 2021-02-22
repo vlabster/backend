@@ -3,15 +3,15 @@ var cors = require("cors");
 
 var app = express();
 
-app.use(cors()); // Use this after the variable declaration
+app.use(cors());
 app.use(express.json());
 
 var mysql = require("mysql");
 const connection = mysql.createPool({
-    host: "localhost",
-    user: "root",
-    password: "1",
-    database: "alan",
+    host: process.env.MYSQL_HOST,
+    user: process.env.MYSQL_USER,
+    password: process.env.MYSQL_PASSWORD,
+    database: process.env.MYSQL_DBNAME,
 });
 
 app.post("/col", function (req, res) {
@@ -43,7 +43,6 @@ app.post("/col", function (req, res) {
                 .concat(allResults[2]);
             res.send(results);
         })
-
         .catch((e) => {});
 });
 
