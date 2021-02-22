@@ -46,4 +46,4 @@ app.post("/col", function (req, res) {
         .catch((e) => {});
 });
 
-app.listen(process.cwd.BACKEND_PORT);
+app.listen(process.env.BACKEND_PORT);
