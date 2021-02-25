@@ -11,6 +11,6 @@ CREATE TABLE `entities` (
   `created` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Дата создания',
   `updated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Дата обновления',
   `deleted` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'флаг удаления',
-  PRIMARY KEY (`entity_id`)
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Сущности';
 /*!40101 SET character_set_client = @saved_cs_client */;
