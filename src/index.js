@@ -14,10 +14,17 @@ const connection = mysql.createPool({
     database: process.env.MYSQL_DBNAME,
 });
 
+const fakeData = [
+    {
+        title: "Fake data from backend",
+    },
+];
+
 app.post("/col", function (req, res) {
     res.statusCode = 200;
-    res.setHeader("Content-Type", "text/plain");
-    res.end("Hi andre! I'm server.\n");
+    res.setHeader("Content-Type", "application/json");
+
+    res.end(JSON.stringify(fakeData) + "\n");
 });
 
 app.listen(process.env.BACKEND_PORT);
