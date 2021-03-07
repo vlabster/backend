@@ -1,12 +1,35 @@
-var express = require("express");
-var cors = require("cors");
+const express = require("express");
+const cors = require("cors");
+const { graphqlHTTP } = require("express-graphql");
 
-var app = express();
+// Массив с продуктами
+const medications = require("../db/medications");
+
+// Схема GraphQL
+const schema = require("./schema");
+
+// Фун-ии для работы с GraphQL
+const root = {
+    getAllMedications: () => {
+        return medications;
+    },
+};
+
+const app = express();
 
 app.use(cors());
 app.use(express.json());
 
-var mysql = require("mysql");
+app.use(
+    "/graphql",
+    graphqlHTTP({
+        graphiql: true,
+        schema,
+        rootValue: root,
+    })
+);
+
+const mysql = require("mysql");
 const connection = mysql.createPool({
     host: process.env.MYSQL_HOST,
     user: process.env.MYSQL_USER,
@@ -23,8 +46,13 @@ const fakeData = [
 app.post("/col", function (req, res) {
     res.statusCode = 200;
     res.setHeader("Content-Type", "application/json");
-
     res.end(JSON.stringify(fakeData) + "\n");
 });
 
-app.listen(process.env.BACKEND_PORT);
+// app.listen(process.env.BACKEND_PORT);   Я прост не работал с mySql и process.env и т.д. Если че, то переделаю всё как надо
+
+const PORT = 5501;
+
+app.listen(PORT, () => {
+    console.log(`Сервер запущен на порту ${PORT}`);
+});
