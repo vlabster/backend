@@ -10,7 +10,7 @@ const expressPlayground = require("graphql-playground-middleware-express")
     .default;
 
 const schema = fs.readFileSync(
-    path.join(__dirname, "./shema", "schema.graphql"),
+    path.join(__dirname, "shema", "schema.graphql"),
     "utf-8",
     (error) => {
         if (error) throw error;
@@ -37,17 +37,17 @@ server.applyMiddleware({
 
 app.use("/playground", expressPlayground({ endpoint: "/graphql" }));
 
-// Start server
-app.listen({ port: 4000 }, () =>
-    console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`)
+const PORT = 4001;
+
+app.listen(PORT, () =>
+    console.log(
+        `🚀 Server ready at http://localhost:${PORT}${server.graphqlPath}`
+    )
 );
 
-// const mysql = require("mysql");
 // const connection = mysql.createPool({
 //     host: process.env.MYSQL_HOST,
 //     user: process.env.MYSQL_USER,
 //     password: process.env.MYSQL_PASSWORD,
 //     database: process.env.MYSQL_DBNAME,
 // });
-
-// app.listen(process.env.BACKEND_PORT);
