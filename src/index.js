@@ -37,11 +37,9 @@ server.applyMiddleware({
 
 app.use("/playground", expressPlayground({ endpoint: "/graphql" }));
 
-const PORT = 4001;
-
-app.listen(PORT, () =>
+app.listen(process.env.BACKEND_PORT, () =>
     console.log(
-        `🚀 Server ready at http://localhost:${PORT}${server.graphqlPath}`
+        `🚀 Server ready at http://localhost:${process.env.BACKEND_PORT}${server.graphqlPath}`
     )
 );
 
