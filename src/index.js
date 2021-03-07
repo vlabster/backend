@@ -1,58 +1,53 @@
+const path = require("path");
+const fs = require("fs");
+
 const express = require("express");
 const cors = require("cors");
-const { graphqlHTTP } = require("express-graphql");
 
-// Массив с продуктами
-const medications = require("../db/medications");
+// Apollo server
+const { ApolloServer, gql } = require("apollo-server-express");
+const expressPlayground = require("graphql-playground-middleware-express")
+    .default;
 
-// Схема GraphQL
-const schema = require("./schema");
+const schema = fs.readFileSync(
+    path.join(__dirname, "./shema", "schema.graphql"),
+    "utf-8",
+    (error) => {
+        if (error) throw error;
+    }
+);
 
-// Фун-ии для работы с GraphQL
-const root = {
-    getAllMedications: () => {
-        return medications;
-    },
-};
+const typeDefs = gql(schema);
+const resolvers = require("./resolvers");
+
+const server = new ApolloServer({ typeDefs, resolvers });
 
 const app = express();
-
 app.use(cors());
 app.use(express.json());
 
-app.use(
-    "/graphql",
-    graphqlHTTP({
-        graphiql: true,
-        schema,
-        rootValue: root,
-    })
+server.applyMiddleware({
+    app,
+    cors: {
+        origin: "*",
+        methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+        optionsSuccessStatus: 204,
+    },
+});
+
+app.use("/playground", expressPlayground({ endpoint: "/graphql" }));
+
+// Start server
+app.listen({ port: 4000 }, () =>
+    console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`)
 );
 
-const mysql = require("mysql");
-const connection = mysql.createPool({
-    host: process.env.MYSQL_HOST,
-    user: process.env.MYSQL_USER,
-    password: process.env.MYSQL_PASSWORD,
-    database: process.env.MYSQL_DBNAME,
-});
+// const mysql = require("mysql");
+// const connection = mysql.createPool({
+//     host: process.env.MYSQL_HOST,
+//     user: process.env.MYSQL_USER,
+//     password: process.env.MYSQL_PASSWORD,
+//     database: process.env.MYSQL_DBNAME,
+// });
 
-const fakeData = [
-    {
-        title: "Fake data from backend",
-    },
-];
-
-app.post("/col", function (req, res) {
-    res.statusCode = 200;
-    res.setHeader("Content-Type", "application/json");
-    res.end(JSON.stringify(fakeData) + "\n");
-});
-
-// app.listen(process.env.BACKEND_PORT);   Я прост не работал с mySql и process.env и т.д. Если че, то переделаю всё как надо
-
-const PORT = 5501;
-
-app.listen(PORT, () => {
-    console.log(`Сервер запущен на порту ${PORT}`);
-});
+// app.listen(process.env.BACKEND_PORT);
