@@ -30,11 +30,13 @@ const ping = async () => {
                 conn.release();
 
                 if (err) {
-                    reject(false);
+                    reject(err);
 
                     return;
                 }
-                console.log("Server responded to ping");
+
+                console.log("mysql responded to ping");
+
                 resolve(true);
             });
         });
@@ -42,21 +44,6 @@ const ping = async () => {
 
     return res;
 };
-
-const freeze = (time) => {
-    const stop = new Date().getTime() + time;
-    while (new Date().getTime() < stop);
-};
-
-// not working
-// for (let i = 10; i > 1; i--) {
-//     ping().catch((err) => {
-//         // console.log(err);
-//         // process.exit(1);
-//     });
-//     freeze(1000);
-//     console.log("ping to mysql ", i);
-// }
 
 const schema = fs.readFileSync(
     path.join(__dirname, "schema", "schema.graphql"),
@@ -67,7 +54,6 @@ const schema = fs.readFileSync(
 );
 
 const typeDefs = gql(schema);
-const app = express();
 const apolloServer = new ApolloServer({
     typeDefs,
     resolvers,
@@ -75,6 +61,7 @@ const apolloServer = new ApolloServer({
     context: { db },
 });
 
+const app = express();
 apolloServer.applyMiddleware({
     app,
     cors: {
@@ -85,14 +72,14 @@ apolloServer.applyMiddleware({
 });
 app.use("/playground", expressPlayground({ endpoint: "/graphql" }));
 
-function onSignal() {
-    console.log("server is starting cleanup");
+const onSignal = () => {
+    console.log("server is stopping");
     return Promise.all([apolloServer.stop(), pool.end()]);
-}
+};
 
-function onShutdown() {
+const onShutdown = () => {
     console.log("server is stopped");
-}
+};
 
 const server = http.createServer(app);
 
@@ -102,8 +89,39 @@ createTerminus(server, {
     onShutdown,
 });
 
-server.listen(process.env.BACKEND_PORT, () =>
-    console.log(
-        `🚀 Server ready at http://localhost:${process.env.BACKEND_PORT}`
-    )
-);
+console.log("server is started");
+
+const MAX_ATTEMPTS = 30;
+const ATTEMPT_INTERVAL = 1000;
+const rejectDelay = (r) => {
+    console.log("trying to connect to mysql...");
+    return new Promise((_, j) => setTimeout(j.bind(null, r), ATTEMPT_INTERVAL));
+};
+
+const testAttempt = (v) => {
+    if (v === true) {
+        return v;
+    }
+
+    throw v;
+};
+
+let repeater = Promise.reject();
+for (let i = 0; i < MAX_ATTEMPTS; i++) {
+    repeater = repeater.catch(ping).then(testAttempt).catch(rejectDelay);
+}
+
+const runApp = () =>
+    server.listen(process.env.BACKEND_PORT, () =>
+        console.log(
+            `server ready at http://localhost:${process.env.BACKEND_PORT}`
+        )
+    );
+
+const errorHandler = (err) => {
+    console.error("failed to connect to mysql:", err.code);
+
+    process.exit(1);
+};
+
+repeater.then(runApp).catch(errorHandler);
