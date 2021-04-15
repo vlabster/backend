@@ -9,7 +9,7 @@ type Entity {
     entity: String
     created: String
     updated: String
-    deleted: String
+    deleted: Int
 }
 
 type Query {
