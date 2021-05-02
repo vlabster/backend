@@ -12,7 +12,28 @@ type Entity {
     deleted: Int
 }
 
+
+type Product {
+    id: ID,
+    shortName: String,
+    fullName: String
+}
+
+input ProductInput {
+    id: ID,
+    shortName: String!
+    fullName: String!
+}
+
+type Mutation {
+    addProduct(input: ProductInput): Product
+}
+
+
 type Query {
     books: [Book]
     entities: [Entity]
+    products: [Product]
 }
+
+
