@@ -25,15 +25,17 @@ input ProductInput {
 }
 
 type Mutation {
-    addProduct(input: ProductInput): bool!
+    addProduct(input: ProductInput): Boolean!
 }
 
 type Query {
     books: [Book]
     entities: [Entity]
     products: [Product]
-    suggestProduct(input: SuggestProductInput!): [Product]
+    suggestProduct: [Product]
 }
+
+
 
 input SuggestProductInput {
     query: String!
