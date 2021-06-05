@@ -13,9 +13,9 @@ type Entity {
 }
 
 type Product {
-    id: ID
-    shortName: String
-    fullName: String
+    id: ID!
+    title: String!
+    price: String!
 }
 
 input ProductInput {
@@ -32,7 +32,7 @@ type Query {
     books: [Book]
     entities: [Entity]
     products: [Product]
-    suggestProduct: [Product]
+    product(title: String!): [Product]
 }
 
 
