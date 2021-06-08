@@ -34,8 +34,6 @@ const books = [
     },
 ];
 
-
-
 const resolvers = {
     Query: {
         books: async (_, o, { db }) => {
@@ -96,6 +94,14 @@ const resolvers = {
                         .toLowerCase()
                         .indexOf(args.title.toLowerCase()) > -1
             );
+        },
+    },
+    Mutation: {
+        addProduct: (parent, { id, title }, context, info) => {
+            const newProduct = { id, title };
+            products.push(newProduct);
+
+            return products;
         },
     },
 };
