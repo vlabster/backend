@@ -97,9 +97,38 @@ const resolvers = {
         },
     },
     Mutation: {
-        addProduct: (parent, { id, title }, context, info) => {
-            const newProduct = { id, title };
-            products.push(newProduct);
+        addProduct: async (_, o, { db }, { id, title }) => {
+            const res = await new Promise((resolve, reject) => {
+                db.getConnection(function (err, conn) {
+                    if (err) {
+                        reject(err);
+                        return;
+                    }
+                    const newProduct = { id, title };
+                    products.push(newProduct);
+                    conn.query(
+                        "INSERT INTO entities VALUES ?",
+                        {
+                            id: 213,
+                            type: "hello",
+                            entity: '{"3": 3}',
+                            created: "2010-10-23 10:37:22",
+                            updated: "2012-10-23 10:37:22",
+                            deleted: 0,
+                        },
+                        (err, res) => {
+                            conn.release();
+
+                            if (err) {
+                                reject(err);
+                                return;
+                            }
+
+                            resolve(res);
+                        }
+                    );
+                });
+            });
 
             return products;
         },

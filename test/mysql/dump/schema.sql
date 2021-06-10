@@ -17,3 +17,4 @@ CREATE TABLE entities (
 
 INSERT INTO entities VALUES(1, 'test1', '{"1": 1}', "2008-10-23 10:37:22", "2008-10-23 10:37:22", 0);
 INSERT INTO entities VALUES(2, 'test2', '{"2": 2}', "2010-10-23 10:37:22", "2012-10-23 10:37:22", 1);
+
