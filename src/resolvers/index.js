@@ -98,33 +98,42 @@ const resolvers = {
     },
     Mutation: {
         addProduct: async (_, o, { db }, { id, title }) => {
+            const newProduct = { id, title };
+            console.log(newProduct);
+            products.push(newProduct);
             const res = await new Promise((resolve, reject) => {
                 db.getConnection(function (err, conn) {
                     if (err) {
                         reject(err);
                         return;
                     }
-                    const newProduct = { id, title };
-                    products.push(newProduct);
-                    conn.query(
-                        "INSERT INTO entities VALUES ?",
-                        {
-                            id: 213,
-                            type: "hello",
-                            entity: '{"3": 3}',
-                            created: "2010-10-23 10:37:22",
-                            updated: "2012-10-23 10:37:22",
-                            deleted: 0,
-                        },
-                        (err, res) => {
-                            conn.release();
+                    const c = conn.query(
+                        "SELECT COUNT (*) AS count FROM entities",
+                        function (error, results) {
+                            console.log(results[0].count + " rows");
 
-                            if (err) {
-                                reject(err);
-                                return;
-                            }
+                            const q = conn.query(
+                                "INSERT INTO entities (id, type, entity, created, updated) VALUES(?,?,?,?,?)",
+                                [
+                                    213,
+                                    "hello",
+                                    `{"${results[0].count + 1}": ${
+                                        results[0].count + 1
+                                    }}`,
+                                    "2010-10-23 10:37:22",
+                                    "2012-10-23 10:37:22",
+                                ],
+                                (err, res) => {
+                                    conn.release();
 
-                            resolve(res);
+                                    if (err) {
+                                        reject(err);
+                                        return;
+                                    }
+                                    resolve(res);
+                                }
+                            );
+                            console.log(q.sql);
                         }
                     );
                 });
