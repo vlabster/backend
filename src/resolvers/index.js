@@ -1,3 +1,7 @@
+const {
+    ProvidedRequiredArgumentsOnDirectivesRule,
+} = require("graphql/validation/rules/ProvidedRequiredArgumentsRule");
+
 const products = [
     {
         id: "1",
@@ -97,7 +101,7 @@ const resolvers = {
         },
     },
     Mutation: {
-        async addProduct(_, { id, title, entity, fullTitle, price }, { db }) {
+        addProduct: (_, { id, title, entity, fullTitle, price }, { db }) => {
             const newProduct = { id, title, entity, fullTitle, price };
             products.push(newProduct);
 
@@ -106,6 +110,7 @@ const resolvers = {
                     reject(err);
                     return;
                 }
+                console.log(newProduct.id);
                 const insertProductData = conn.query(
                     "INSERT INTO entities (id, type, entity) VALUES (?,?,?)",
                     [
@@ -117,13 +122,82 @@ const resolvers = {
                         conn.release();
 
                         if (err) {
-                            reject(err);
+                            console.log(err);
                             return;
                         }
                     }
                 );
             });
 
+            return products;
+        },
+        updateProduct: (_, ih, { db }) => {
+            const updateOk = products.find(
+                (product) => product.id === ih.productId
+            );
+            if (!updateOk) {
+                console.log("error, not such product");
+            }
+
+            updateOk.title = ih.title;
+            updateOk.entity = ih.entity;
+
+            console.log(products);
+
+            db.getConnection(function (err, conn) {
+                if (err) {
+                    console.log(err);
+                    return;
+                }
+
+                console.log(products);
+
+                const uploadData = conn.query(
+                    "UPDATE entities SET type =?, entity =? WHERE id = ?",
+                    [
+                        updateOk.title,
+                        `{"${updateOk.entity}": ${updateOk.entity}}`,
+                        updateOk.id,
+                    ],
+                    (err, res) => {
+                        conn.release();
+                        console.log("we here");
+                        console.log(res);
+                        if (err) {
+                            console.log(err);
+                            return;
+                        }
+                    }
+                );
+
+                console.log(uploadData.sql);
+                console.log(products);
+            });
+
+            return products;
+        },
+        removeProduct: (_, ih, { db }) => {
+            db.getConnection(function (err, conn) {
+                if (err) {
+                    console.log(err);
+                    return;
+                }
+                console.log(products);
+                const deleteData = conn.query(
+                    "DELETE FROM entities WHERE id = ?",
+                    [ih.id],
+                    (err, res) => {
+                        conn.release();
+                        console.log("we here");
+                        console.log(res);
+                        if (err) {
+                            console.log(err);
+                            return;
+                        }
+                    }
+                );
+                console.log(deleteData.sql);
+            });
             return products;
         },
     },
