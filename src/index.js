@@ -2,8 +2,8 @@ const path = require("path");
 const fs = require("fs");
 const http = require("http");
 const { createTerminus } = require("@godaddy/terminus");
-const expressPlayground = require("graphql-playground-middleware-express")
-    .default;
+const expressPlayground =
+    require("graphql-playground-middleware-express").default;
 const { ApolloServer, gql } = require("apollo-server-express");
 const express = require("express");
 const resolvers = require("./resolvers");

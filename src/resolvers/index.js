@@ -34,8 +34,6 @@ const books = [
     },
 ];
 
-
-
 const resolvers = {
     Query: {
         books: async (_, o, { db }) => {
@@ -96,6 +94,37 @@ const resolvers = {
                         .toLowerCase()
                         .indexOf(args.title.toLowerCase()) > -1
             );
+        },
+    },
+    Mutation: {
+        async addProduct(_, { id, title, entity, fullTitle, price }, { db }) {
+            const newProduct = { id, title, entity, fullTitle, price };
+            products.push(newProduct);
+
+            db.getConnection(function (err, conn) {
+                if (err) {
+                    console.log(err);
+                    return;
+                }
+                const insertProductData = conn.query(
+                    "INSERT INTO entities (id, type, entity) VALUES (?,?,?)",
+                    [
+                        newProduct.id,
+                        newProduct.title,
+                        `{"${newProduct.entity}": ${newProduct.entity}}`,
+                    ],
+                    (err, res) => {
+                        conn.release();
+
+                        if (err) {
+                            console.log(err);
+                            return;
+                        }
+                    }
+                );
+            });
+
+            return products;
         },
     },
 };
