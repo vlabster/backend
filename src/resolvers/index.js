@@ -103,7 +103,7 @@ const resolvers = {
 
             db.getConnection(function (err, conn) {
                 if (err) {
-                    reject(err);
+                    console.log(err);
                     return;
                 }
                 const insertProductData = conn.query(
@@ -117,7 +117,7 @@ const resolvers = {
                         conn.release();
 
                         if (err) {
-                            reject(err);
+                            console.log(err);
                             return;
                         }
                     }
