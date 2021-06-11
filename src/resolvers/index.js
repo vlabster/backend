@@ -97,46 +97,31 @@ const resolvers = {
         },
     },
     Mutation: {
-        addProduct: async (_, o, { db }, { id, title }) => {
-            const newProduct = { id, title };
-            console.log(newProduct);
+        async addProduct(_, { id, title, entity, fullTitle, price }, { db }) {
+            const newProduct = { id, title, entity, fullTitle, price };
             products.push(newProduct);
-            const res = await new Promise((resolve, reject) => {
-                db.getConnection(function (err, conn) {
-                    if (err) {
-                        reject(err);
-                        return;
-                    }
-                    const c = conn.query(
-                        "SELECT COUNT (*) AS count FROM entities",
-                        function (error, results) {
-                            console.log(results[0].count + " rows");
 
-                            const q = conn.query(
-                                "INSERT INTO entities (id, type, entity, created, updated) VALUES(?,?,?,?,?)",
-                                [
-                                    213,
-                                    "hello",
-                                    `{"${results[0].count + 1}": ${
-                                        results[0].count + 1
-                                    }}`,
-                                    "2010-10-23 10:37:22",
-                                    "2012-10-23 10:37:22",
-                                ],
-                                (err, res) => {
-                                    conn.release();
+            db.getConnection(function (err, conn) {
+                if (err) {
+                    reject(err);
+                    return;
+                }
+                const insertProductData = conn.query(
+                    "INSERT INTO entities (id, type, entity) VALUES (?,?,?)",
+                    [
+                        newProduct.id,
+                        newProduct.title,
+                        `{"${newProduct.entity}": ${newProduct.entity}}`,
+                    ],
+                    (err, res) => {
+                        conn.release();
 
-                                    if (err) {
-                                        reject(err);
-                                        return;
-                                    }
-                                    resolve(res);
-                                }
-                            );
-                            console.log(q.sql);
+                        if (err) {
+                            reject(err);
+                            return;
                         }
-                    );
-                });
+                    }
+                );
             });
 
             return products;

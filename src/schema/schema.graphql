@@ -22,6 +22,7 @@ type Query {
 type Product implements Node {
     id: ID!
     title: String!
+    entity: Int
     fullTitle: String
     price: String
     vendors: [Vendor]
@@ -37,7 +38,13 @@ input SearchProductInput {
 }
 
 type Mutation {
-    addProduct(id: ID!, title: String!): [Product]!
+    addProduct(
+        id: ID!
+        title: String!
+        entity: Int!
+        fullTitle: String
+        price: String
+    ): [Product]!
 }
 
 type Vendor implements Node {
