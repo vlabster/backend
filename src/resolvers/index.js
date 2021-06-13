@@ -43,7 +43,7 @@ const resolvers = {
         addProduct: (_, thisProduct, { db }) => {
             db.getConnection(function (err, conn) {
                 if (err) {
-                    reject(err);
+                    console.log(err);
                     return;
                 }
 
