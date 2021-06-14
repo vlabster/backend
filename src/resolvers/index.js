@@ -4,7 +4,7 @@ const {
 
 const resolvers = {
     Mutation: {
-        addProduct: async (_, thisProduct, { db }) => {
+        addEntity: async (_, thisEntity, { db }) => {
             const res = await new Promise((resolve, reject) => {
                 db.getConnection(function (err, conn) {
                     if (err) {
@@ -14,9 +14,9 @@ const resolvers = {
                     conn.query(
                         "INSERT INTO entities (id, type, entity) VALUES (UNHEX(?),?,?)",
                         [
-                            thisProduct.id,
-                            thisProduct.title,
-                            `{"${thisProduct.entity}": ${thisProduct.entity}}`,
+                            thisEntity.id,
+                            thisEntity.type,
+                            `{"${thisEntity.entity}": ${thisEntity.entity}}`,
                         ],
                         (err, res) => {
                             conn.release();
@@ -30,10 +30,40 @@ const resolvers = {
                     );
                 });
             });
-            console.log("Added product: ", JSON.stringify(res, null, 2));
+            console.log("Added Entity: ", JSON.stringify(res, null, 2));
             return res;
         },
-        updateProduct: async (_, thisProduct, { db }) => {
+        // will be restored while working with products
+        // updateProduct: async (_, thisProduct, { db }) => {
+        //     const res = await new Promise((resolve, reject) => {
+        //         db.getConnection(function (err, conn) {
+        //             if (err) {
+        //                 reject(err);
+        //                 return;
+        //             }
+        //             conn.query(
+        //                 "UPDATE entities SET type =?, entity =? WHERE id = UNHEX(?)",
+        //                 [
+        //                     thisProduct.title,
+        //                     `{"${thisProduct.entity}": ${thisProduct.entity}}`,
+        //                     thisProduct.id,
+        //                 ],
+        //                 (err, res) => {
+        //                     conn.release();
+        //                     if (err) {
+        //                         reject(err);
+        //                         return;
+        //                     }
+
+        //                     resolve(res);
+        //                 }
+        //             );
+        //         });
+        //     });
+        //     console.log("Updated product: ", JSON.stringify(res, null, 2));
+        //     return res;
+        // },
+        restoreEntity: async (_, thisEntity, { db }) => {
             const res = await new Promise((resolve, reject) => {
                 db.getConnection(function (err, conn) {
                     if (err) {
@@ -41,12 +71,8 @@ const resolvers = {
                         return;
                     }
                     conn.query(
-                        "UPDATE entities SET type =?, entity =? WHERE id = UNHEX(?)",
-                        [
-                            thisProduct.title,
-                            `{"${thisProduct.entity}": ${thisProduct.entity}}`,
-                            thisProduct.id,
-                        ],
+                        "UPDATE entities SET deleted = ? WHERE id = UNHEX(?)",
+                        [0, thisEntity.id],
                         (err, res) => {
                             conn.release();
                             if (err) {
@@ -59,10 +85,10 @@ const resolvers = {
                     );
                 });
             });
-            console.log("Updated product: ", JSON.stringify(res, null, 2));
+            console.log("Restored Entity: ", JSON.stringify(res, null, 2));
             return res;
         },
-        removeProduct: async (_, thisProduct, { db }) => {
+        removeEntity: async (_, thisEntity, { db }) => {
             const res = await new Promise((resolve, reject) => {
                 db.getConnection(function (err, conn) {
                     if (err) {
@@ -70,8 +96,8 @@ const resolvers = {
                         return;
                     }
                     conn.query(
-                        "DELETE FROM entities WHERE id = UNHEX(?)",
-                        [thisProduct.id],
+                        "UPDATE entities SET deleted = ? WHERE id = UNHEX(?)",
+                        [1, thisEntity.id],
                         (err, res) => {
                             conn.release();
                             if (err) {
@@ -84,12 +110,12 @@ const resolvers = {
                     );
                 });
             });
-            console.log("Removed product: ", JSON.stringify(res, null, 2));
+            console.log("Removed Entity: ", JSON.stringify(res, null, 2));
             return res;
         },
     },
     Query: {
-        product: async (_, thisProduct, { db }) => {
+        searchEntity: async (_, thisEntity, { db }) => {
             const res = await new Promise((resolve, reject) => {
                 db.getConnection(function (err, conn) {
                     if (err) {
@@ -97,8 +123,8 @@ const resolvers = {
                         return;
                     }
                     conn.query(
-                        "SELECT * FROM entities WHERE type = ?",
-                        [thisProduct.title],
+                        "SELECT * FROM entities WHERE id = UNHEX(?)",
+                        [thisEntity.id],
                         (err, res) => {
                             conn.release();
                             if (err) {
@@ -111,11 +137,11 @@ const resolvers = {
                     );
                 });
             });
-            console.log("product: ", JSON.stringify(res, null, 2));
+            console.log("Search Entity: ", JSON.stringify(res, null, 2));
             return res;
         },
 
-        entities: async (_, o, { db }) => {
+        allEntities: async (_, o, { db }) => {
             const res = await new Promise((resolve, reject) => {
                 db.getConnection(function (err, conn) {
                     if (err) {
@@ -136,7 +162,7 @@ const resolvers = {
                 });
             });
 
-            console.log("Products: ", JSON.stringify(res, null, 2));
+            console.log("Entities: ", JSON.stringify(res, null, 2));
 
             return res;
         },
