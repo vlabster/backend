@@ -14,9 +14,9 @@ type Entity {
 
 type Query {
     books: [Book]
-    entities: [Entity]
+    allEntities: [Entity]
     products: [Product]
-    product(title: String!): Product
+    searchEntity(id: ID!): Entity
 }
 type Product implements Node {
     id: ID!
@@ -38,22 +38,17 @@ input SearchProductInput {
 }
 
 type Mutation {
-    addProduct(
-        id: ID!
-        title: String!
-        entity: Int!
-        fullTitle: String
-        price: String
-    ): Product!
-    updateProduct(
-        id: ID!
-        title: String
-        entity: Int
-        fullTitle: String
-        price: String
-    ): Product!
-
-    removeProduct(id: ID!): Product!
+    addEntity(id: ID!, type: String!, entity: Int!): Entity
+    # updateProduct(
+    #     id: ID!
+    #     title: String
+    #     entity: Int
+    #     fullTitle: String
+    #     price: String
+    # ): Product!
+    # will be restored while working with products
+    removeEntity(id: ID!): Entity
+    restoreEntity(id: ID!): Entity
 }
 
 type Vendor implements Node {
