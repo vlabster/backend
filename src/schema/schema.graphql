@@ -16,12 +16,12 @@ type Query {
     books: [Book]
     entities: [Entity]
     products: [Product]
-    product(title: String!): [Product]
-    searchProduct(in: SearchProductInput): [Product]
+    product(title: String!): Product
 }
 type Product implements Node {
     id: ID!
     title: String!
+    type: String
     entity: Int
     fullTitle: String
     price: String
@@ -44,16 +44,16 @@ type Mutation {
         entity: Int!
         fullTitle: String
         price: String
-    ): [Product]!
+    ): Product!
     updateProduct(
         id: ID!
         title: String
         entity: Int
         fullTitle: String
         price: String
-    ): [Product]!
+    ): Product!
 
-    removeProduct(id: ID!): [Product]!
+    removeProduct(id: ID!): Product!
 }
 
 type Vendor implements Node {
