@@ -45,6 +45,15 @@ type Mutation {
         fullTitle: String
         price: String
     ): [Product]!
+    updateProduct(
+        id: ID!
+        title: String
+        entity: Int
+        fullTitle: String
+        price: String
+    ): [Product]!
+
+    removeProduct(id: ID!): [Product]!
 }
 
 type Vendor implements Node {

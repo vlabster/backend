@@ -1,3 +1,7 @@
+const {
+    ProvidedRequiredArgumentsOnDirectivesRule,
+} = require("graphql/validation/rules/ProvidedRequiredArgumentsRule");
+
 const products = [
     {
         id: "1",
@@ -35,6 +39,80 @@ const books = [
 ];
 
 const resolvers = {
+    Mutation: {
+        addProduct: (_, thisProduct, { db }) => {
+            db.getConnection(function (err, conn) {
+                if (err) {
+                    console.log(err);
+                    return;
+                }
+
+                conn.query(
+                    "INSERT INTO entities (id, type, entity) VALUES (UNHEX(?),?,?)",
+                    [
+                        thisProduct.id,
+                        thisProduct.title,
+                        `{"${thisProduct.entity}": ${thisProduct.entity}}`,
+                    ],
+                    (err) => {
+                        conn.release();
+                        if (err) {
+                            console.log(err);
+                            return;
+                        }
+                    }
+                );
+            });
+
+            return products;
+        },
+        updateProduct: (_, thisProduct, { db }) => {
+            db.getConnection(function (err, conn) {
+                if (err) {
+                    console.log(err);
+                    return;
+                }
+
+                conn.query(
+                    "UPDATE entities SET type =?, entity =? WHERE id = UNHEX(?)",
+                    [
+                        thisProduct.title,
+                        `{"${thisProduct.entity}": ${thisProduct.entity}}`,
+                        thisProduct.id,
+                    ],
+                    (err) => {
+                        conn.release();
+                        if (err) {
+                            console.log(err);
+                            return;
+                        }
+                    }
+                );
+            });
+
+            return products;
+        },
+        removeProduct: (_, thisProduct, { db }) => {
+            db.getConnection(function (err, conn) {
+                if (err) {
+                    console.log(err);
+                    return;
+                }
+                conn.query(
+                    "DELETE FROM entities WHERE id = UNHEX(?)",
+                    [thisProduct.id],
+                    (err) => {
+                        conn.release();
+                        if (err) {
+                            console.log(err);
+                            return;
+                        }
+                    }
+                );
+            });
+            return products;
+        },
+    },
     Query: {
         books: async (_, o, { db }) => {
             const res = await new Promise((resolve, reject) => {
@@ -94,37 +172,6 @@ const resolvers = {
                         .toLowerCase()
                         .indexOf(args.title.toLowerCase()) > -1
             );
-        },
-    },
-    Mutation: {
-        async addProduct(_, { id, title, entity, fullTitle, price }, { db }) {
-            const newProduct = { id, title, entity, fullTitle, price };
-            products.push(newProduct);
-
-            db.getConnection(function (err, conn) {
-                if (err) {
-                    console.log(err);
-                    return;
-                }
-                const insertProductData = conn.query(
-                    "INSERT INTO entities (id, type, entity) VALUES (?,?,?)",
-                    [
-                        newProduct.id,
-                        newProduct.title,
-                        `{"${newProduct.entity}": ${newProduct.entity}}`,
-                    ],
-                    (err, res) => {
-                        conn.release();
-
-                        if (err) {
-                            console.log(err);
-                            return;
-                        }
-                    }
-                );
-            });
-
-            return products;
         },
     },
 };
