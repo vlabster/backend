@@ -4,7 +4,7 @@ type Book {
 }
 
 type Entity {
-    id: Int
+    id: ID
     type: String
     entity: String
     created: String

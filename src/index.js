@@ -91,7 +91,7 @@ createTerminus(server, {
 
 console.log("server is started");
 
-const MAX_ATTEMPTS = 30;
+const MAX_ATTEMPTS = 100;
 const ATTEMPT_INTERVAL = 1000;
 const rejectDelay = (r) => {
     console.log("trying to connect to mysql...");
