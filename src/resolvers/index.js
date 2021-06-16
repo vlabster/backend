@@ -31,7 +31,7 @@ const resolvers = {
                 });
             });
             console.log("Added Entity: ", JSON.stringify(res, null, 2));
-            return res;
+            return thisEntity;
         },
         // will be restored while working with products
         // updateProduct: async (_, thisProduct, { db }) => {
@@ -86,7 +86,7 @@ const resolvers = {
                 });
             });
             console.log("Restored Entity: ", JSON.stringify(res, null, 2));
-            return res;
+            return thisEntity;
         },
         removeEntity: async (_, thisEntity, { db }) => {
             const res = await new Promise((resolve, reject) => {
@@ -111,7 +111,7 @@ const resolvers = {
                 });
             });
             console.log("Removed Entity: ", JSON.stringify(res, null, 2));
-            return res;
+            return thisEntity;
         },
     },
     Query: {
@@ -138,7 +138,7 @@ const resolvers = {
                 });
             });
             console.log("Search Entity: ", JSON.stringify(res, null, 2));
-            return res;
+            return thisEntity;
         },
 
         allEntities: async (_, o, { db }) => {
