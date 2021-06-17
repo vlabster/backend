@@ -15,6 +15,16 @@ CREATE TABLE entities (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Сущности';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
+CREATE TABLE triples (
+    `subject` binary(16) NOT NULL COMMENT 'UUID товара',
+    `predicate` varchar(255) NOT NULL COMMENT 'Отношение субьекта к объекту',
+    `object` binary(16) NOT NULL COMMENT 'UUID объекта',
+    `priority` int NOT NULL DEFAULT '1' COMMENT 'Номер приоритета',
+    `deleted` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Флаг удаления',
+    PRIMARY KEY (`subject`)
+);
+
 INSERT INTO entities VALUES(1, 'test1', '{"1": 1}', "2008-10-23 10:37:22", "2008-10-23 10:37:22", 0);
 INSERT INTO entities VALUES(2, 'test2', '{\"2\": 2}', "2010-10-23 10:37:22", "2012-10-23 10:37:22", 1);
+
 
