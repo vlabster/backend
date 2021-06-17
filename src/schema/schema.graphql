@@ -11,12 +11,20 @@ type Entity {
     updated: String
     deleted: Int
 }
+type Triple {
+    subject: ID!
+    predicate: String!
+    object: ID!
+    priority: Int
+    deleted: Int
+}
 
 type Query {
     books: [Book]
     allEntities: [Entity]
     products: [Product]
     searchEntity(id: ID!): Entity
+    allTriples: [Triple]
 }
 type Product implements Node {
     id: ID!
@@ -38,6 +46,15 @@ input SearchProductInput {
 }
 
 type Mutation {
+    addTriple(
+        subject: ID!
+        predicate: String!
+        object: ID!
+        priority: Int
+    ): Triple
+    updateTriple(subject: ID!, priority: Int): Triple
+    removeTriple(subject: ID!, deleted: Int): Triple
+
     addEntity(id: ID!, type: String!, entity: Int!): Entity
     # updateProduct(
     #     id: ID!
