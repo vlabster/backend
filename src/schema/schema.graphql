@@ -26,16 +26,76 @@ type Query {
     searchEntity(id: ID!): Entity
     allTriples: [Triple]
 }
+# type Product implements Node {
+#     id: ID!
+#     title: String!
+#     type: String
+#     entity: Int
+#     fullTitle: String
+#     price: String
+#     vendors: [Vendor]
+#     offers: [Offer]
+# }
+
+#========================================
+# From CML210
+#========================================
+
+type Identifier {
+    # Идентификатор группы, свойства в классификаторе товаров,
+    # типа цены в классификаторе, документа в рамках файла обмена
+    id: String
+    article: String
+}
+
+#Наименование товара
+type naming {
+    #Единица измерения по ОКЕИ
+    codeNumber: String!
+    #Определяют строковое значение передаваемой информации в 255 символов
+    fullName: String
+    shortName: String
+}
+type manufacturer {
+    #Наименование страны
+    country: String
+    #Торговая марка
+    tradename: String
+}
+type characteristic {
+    id: String
+    naming: String
+    value: String
+}
+
 type Product implements Node {
-    id: ID!
-    title: String!
-    type: String
-    entity: Int
-    fullTitle: String
+    # Определяет статус описанного товара
+    attribute: String
+
+    identification: [Identifier]
+    articles: [article]
+    namings: [naming]
+
+    #Содержит идентификатор группы, к которой принадлежит данный товар.
+    group: String
+
+    #Текст комментария
+    description: String
+
+    #Имя файла картинки для номенклатурной позиции.
+    #Файлы картинок могут поставляться отдельно от передаваемого файла.
+    images: String
+
+    #Производитель
+    manufacturers: [manufacturer]
+    #Характеристики товара
+    characteristics: [characteristic]
     price: String
     vendors: [Vendor]
     offers: [Offer]
 }
+
+#========================================
 
 interface Node {
     id: ID!
