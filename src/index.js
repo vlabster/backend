@@ -53,9 +53,19 @@ const schema = fs.readFileSync(
     }
 );
 
+const MLschema = fs.readFileSync(
+    path.join(__dirname, "schema/MLschema", "MLschema.graphql"),
+    "utf-8",
+    (error) => {
+        if (error) throw error;
+    }
+);
+
 const typeDefs = gql(schema);
+const MLtypeDefs = gql(MLschema);
+
 const apolloServer = new ApolloServer({
-    typeDefs,
+    typeDefs: [MLtypeDefs, typeDefs],
     resolvers,
     introspection: true,
     context: { db },
