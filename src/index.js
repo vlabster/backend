@@ -8,6 +8,7 @@ const { ApolloServer, gql } = require("apollo-server-express");
 const express = require("express");
 const resolvers = require("./resolvers");
 const mysql = require("mysql");
+const { readdir, readdirSync } = require("fs");
 
 const db = mysql.createPool({
     connectionLimit: 10,
@@ -45,27 +46,50 @@ const ping = async () => {
     return res;
 };
 
-const schema = fs.readFileSync(
-    path.join(__dirname, "schema", "schema.graphql"),
-    "utf-8",
-    (error) => {
-        if (error) throw error;
-    }
-);
+// const schema = fs.readFileSync(
+//     path.join(__dirname, "schema", "schema.graphql"),
+//     "utf-8",
+//     (error) => {
+//         if (error) throw error;
+//     }
+// );
 
-const MLschema = fs.readFileSync(
-    path.join(__dirname, "schema/MLschema", "MLschema.graphql"),
-    "utf-8",
-    (error) => {
-        if (error) throw error;
+function searchSchema(startPath, filter) {
+    if (!fs.existsSync(startPath)) {
+        console.log("no dir", startPath);
+        return;
     }
-);
+
+    let files = fs.readdirSync(startPath);
+    let readFiles = "";
+    for (let i = 0; i < files.length; i++) {
+        let filename = path.join(startPath, files[i]);
+        let stat = fs.lstatSync(filename);
+
+        if (stat.isDirectory()) {
+            searchSchema(filename, filter);
+        } else if (filename.indexOf(filter) >= 0) {
+            console.log(filename);
+            fs.readFile(filename, "utf-8", (err, data) => {
+                if (err) {
+                    console.log(err);
+                    return;
+                }
+                console.log(data);
+                readFiles = data;
+
+                return toString(readFiles);
+            });
+        }
+    }
+}
+
+const schema = searchSchema("/app/src/schema", ".graphql");
 
 const typeDefs = gql(schema);
-const MLtypeDefs = gql(MLschema);
 
 const apolloServer = new ApolloServer({
-    typeDefs: [MLtypeDefs, typeDefs],
+    typeDefs,
     resolvers,
     introspection: true,
     context: { db },
