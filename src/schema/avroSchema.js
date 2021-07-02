@@ -1,32 +1,18 @@
 const avro = require("avro-js");
 
 const Merchandise = avro.parse({
-    status: "string",
-    identifiers: [
-        { id: "string" },
-        { barcode: "string" },
-        { article: "string" },
-    ],
-    naming: "string",
-    fundamentalUnits: [
-        {
-            attributes: {
-                codeKey: "string",
-                fullNaming: "string",
-                WorldAbbreviation: "string",
-                ShortNaming: "string",
-            },
-            conversions: {
-                unit: "string",
-                coefficient: "string",
-                additionalInformations: {
-                    valueTags: {
-                        naming: "string",
-                        value: "string",
-                    },
-                },
-            },
-        },
-    ],
-    idProductCounterparty: "string",
+    // фотография товара (лицевая часть). По возможности, и содержимое, если это таблетка
+    preview: "string",
+
+    // Инструкция к лекарственных упрепарату / описание изделия медицинского применения
+    instruction: "string",
+
+    // Цена
+    price: "string",
+
+    //Вариации формы выпуска
+    variables: "string",
+
+    //Дополнительные препараты
+    additionalProducts: "string",
 });
