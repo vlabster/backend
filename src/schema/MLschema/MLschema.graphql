@@ -302,7 +302,7 @@ type Adress {
     fieldAddresses: [FieldAddress]
 }
 
-type Price {
+type PriceN {
     "Представление цены так, как оно отображается в прайс-листе. Например: 10у.е./за 1000 шт."
     representation: String
 
@@ -370,5 +370,5 @@ type Merchandise {
     contacts: [Contact]
 
     "Компонент типа «Цена» описывает цены на номенклатурные позиции товара за единицу."
-    prices: [Price]
+    prices: [PriceN]
 }
