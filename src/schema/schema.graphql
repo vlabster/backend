@@ -25,6 +25,7 @@ type Query {
     products: [Product]
     searchEntity(id: ID!): Entity
     allTriples: [Triple]
+    product(title: String!): [Product]
 }
 type Product implements Node {
     id: ID!
