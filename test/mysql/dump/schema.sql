@@ -24,21 +24,16 @@ CREATE TABLE triples (
     PRIMARY KEY (`subject`)
 );
 
-CREATE TABLE products (
-    `id` binary(16) NOT NULL COMMENT 'UUID продукта',
-    `title` varchar(255) NOT NULL COMMENT 'Заголовок продукта',
-    `type` varchar(255) NOT NULL COMMENT 'Тип продукта',
-    `entity` int NOT NULL DEFAULT '1' COMMENT 'Сущность продукта',
-    `fullTitle` varchar(255) NOT NULL COMMENT 'Полный заголовок продукта',
-    `price` varchar(255) NOT NULL DEFAULT '0' COMMENT 'Цена продукта',
-    `vendors` int NOT NULL DEFAULT '0' COMMENT 'потом поменять',
-    `offers` int NOT NULL DEFAULT '0' COMMENT 'потом поменять',
-    PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Сущности';
+CREATE TABLE suggestion_products (
+    `id` binary(16) NOT NULL COMMENT 'UUID product',
+    `source` varchar(1024) NOT NULL COMMENT 'search source',
+    `type` varchar(255) NOT NULL COMMENT 'entity type',
+    PRIMARY KEY (`id`),
+    FULLTEXT `text` (source)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='suggestion products';
+
+INSERT INTO suggestion_products VALUES(101, 'Капецитабин', 'Таблетки');
 
 INSERT INTO entities VALUES(1, 'test1', '{"1": 1}', "2008-10-23 10:37:22", "2008-10-23 10:37:22", 0);
 INSERT INTO entities VALUES(2, 'test2', '{\"2\": 2}', "2010-10-23 10:37:22", "2012-10-23 10:37:22", 1);
 
-INSERT INTO triples VALUES(51, 'test2634634fyry', 23462362, 2, 1);
-
-INSERT INTO products VALUES("101", 'Капецитабин', 'Таблетки', 3, "Капецитабин таблетки", "200р", 0, 0);

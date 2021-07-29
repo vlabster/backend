@@ -19,14 +19,6 @@ type Triple {
     deleted: Int
 }
 
-type Query {
-    books: [Book]
-    allEntities: [Entity]
-    products: [Product]
-    searchEntity(id: ID!): Entity
-    allTriples: [Triple]
-    product(title: String!): [Product]
-}
 type Product implements Node {
     id: ID!
     title: String!
@@ -36,6 +28,22 @@ type Product implements Node {
     price: String
     vendors: [Vendor]
     offers: [Offer]
+}
+
+type Query {
+    books: [Book]
+    allEntities: [Entity]
+    allTestProducts: [TestProduct]
+    allProducts: [Product]
+    searchEntity(id: ID!): Entity
+    allTriples: [Triple]
+    product(title: String!): [Product]
+}
+
+type TestProduct {
+    id: ID!
+    source: String!
+    type: String
 }
 
 interface Node {
