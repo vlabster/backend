@@ -32,6 +32,8 @@ CREATE TABLE suggestion_products (
     FULLTEXT `text` (source)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='suggestion products';
 
+SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci;
+
 INSERT INTO suggestion_products VALUES(101, 'Капецитабин', 'Таблетки');
 
 INSERT INTO entities VALUES(1, 'test1', '{"1": 1}', "2008-10-23 10:37:22", "2008-10-23 10:37:22", 0);
