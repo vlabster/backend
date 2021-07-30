@@ -286,7 +286,7 @@ const resolvers = {
             console.log("Triples: ", JSON.stringify(res, null, 2));
             return res;
         },
-        allTestProducts: async (_, o, { db }) => {
+        allProducts: async (_, o, { db }) => {
             const res = await new Promise((resolve, reject) => {
                 db.getConnection(function (err, conn) {
                     if (err) {
