@@ -39,14 +39,4 @@ INSERT INTO suggestion_products VALUES(101, 'Капецитабин', 'Табл�
 INSERT INTO entities VALUES(1, 'test1', '{"1": 1}', "2008-10-23 10:37:22", "2008-10-23 10:37:22", 0);
 INSERT INTO entities VALUES(2, 'test2', '{\"2\": 2}', "2010-10-23 10:37:22", "2012-10-23 10:37:22", 1);
 
-delimiter //
-  create definer=`root`@`localhost` function `ordered_uuid`(uuid binary(36))
-  returns binary(16) deterministic
-  return unhex(concat(substr(uuid, 15, 4),substr(uuid, 10, 4),substr(uuid, 1, 8),substr(uuid, 20, 4),substr(uuid, 25)));
-//
-delimiter ;
-
-insert into suggestion_products values (ordered_uuid(uuid()),'1','m',....);
-
-select hex(uuid),is_active,... from suggestion_products ;
 
