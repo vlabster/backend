@@ -1,6 +1,7 @@
 const {
     ProvidedRequiredArgumentsOnDirectivesRule,
 } = require("graphql/validation/rules/ProvidedRequiredArgumentsRule");
+const { v4: uuidv4 } = require("uuid");
 
 const products = [
     {
@@ -24,6 +25,10 @@ const products = [
         price: "от 700р.",
     },
 ];
+
+const convertUuid = (uuid) => {
+    return uuid.replace(/-/g,"");
+};
 
 const resolvers = {
     Mutation: {
@@ -214,6 +219,36 @@ const resolvers = {
             console.log("Removed Triple: ", JSON.stringify(res, null, 2));
             return thisTriple;
         },
+    },
+    addProduct: async (_, thisProduct, { db }) => {
+        
+        const res = await new Promise((resolve, reject) => {
+            db.getConnection(function (err, conn) {
+                if (err) {
+                    reject(err);
+                    return;
+                }
+                conn.query(
+                    "INSERT INTO suggestion_products (id, source, type) VALUES (UNHEX(?),?,?)",
+                    [
+                        thisProduct.id,
+                        thisProduct.source,
+                        thisProduct.type,
+                    ],
+                    (err, res) => {
+                        conn.release();
+                        if (err) {
+                            reject(err);
+                            return;
+                        }
+
+                        resolve(res);
+                    }
+                );
+            });
+        });
+        console.log("Added Entity: ", JSON.stringify(res, null, 2));
+        return thisProduct;
     },
     Query: {
         searchEntity: async (_, thisEntity, { db }) => {
