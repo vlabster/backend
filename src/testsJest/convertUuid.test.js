@@ -1,10 +1,10 @@
 const { id2uuid, uuid2id } = require("../helpers/convertUuid");
 
-describe("convert id2uuid uuid2id", () => {
+describe("convert functions id2uuid uuid2id", () => {
     const id = "58e0a7d7-eebc-11d8-9669-0800200c9a66";
     const uuid = "11d8eebc58e0a7d796690800200c9a66";
 
-    describe("convert id2uuid", () => {
+    describe("converting id2uuid", () => {
         it("convert id to uuid", () => {
             expect(id2uuid(id)).toBe(uuid);
         });
@@ -18,14 +18,14 @@ describe("convert id2uuid uuid2id", () => {
         });
     });
     
-    describe("convert id2uuid2id", () => {
+    describe("converting uuid2id", () => {
         it("convert uuid to id", () => {
             expect(uuid2id(uuid)).toBe(id);
         });
         it("convert empty to id", () => {
             expect(() => uuid2id("")).toThrowError("NOT_STRING_OR_LENGTH");
         });
-        it("convert obj to uuid", () => {
+        it("convert obj to id", () => {
             expect(() => uuid2id({ id: "1234-5678-qwer" })).toThrowError(
                 "NOT_STRING_OR_LENGTH"
             );
