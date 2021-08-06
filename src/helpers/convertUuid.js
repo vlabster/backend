@@ -12,7 +12,7 @@ function id2uuid(uuid) {
 
         return third + second + first + fourth + other;
     } else {
-        throw new TypeError("NOT_STRING_OR_LENGTH");
+        return "";
     }
 }
 
@@ -28,7 +28,7 @@ function uuid2id(uuid) {
 
         return third + "-" + second + "-" + first + "-" + fourth + "-" + other;
     } else {
-        throw new TypeError("NOT_STRING_OR_LENGTH");
+        return "";
     }
 }
 
