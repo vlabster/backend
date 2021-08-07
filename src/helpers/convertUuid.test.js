@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 const { id2uuid, uuid2id } = require("./convertUuid");
 
 describe("convert id2uuid uuid2id", () => {
