@@ -20,7 +20,8 @@
     "graphql-playground-middleware-express": "^1.7.22",
     "jest": "^27.0.6",
     "mysql": "^2.18.1",
-    "uuid": "^8.3.2"
+    "uuid": "^8.3.2",
+    "winston": "^3.3.3"
   },
   "devDependencies": {
     "eslint": "^7.22.0",

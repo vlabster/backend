@@ -64,7 +64,7 @@ type Mutation {
     updateTriple(subject: ID!, priority: Int): Triple
     removeTriple(subject: ID!, deleted: Int): Triple
 
-    addEntity(id: ID!, type: String!, entity: Int!): Entity
+    addEntity(id: ID!, type: String!, entity: String!): Boolean!
     # updateProduct(
     #     id: ID!
     #     title: String

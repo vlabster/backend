@@ -27,65 +27,12 @@ const products = [
 
 const resolvers = {
     Mutation: {
-        addEntity: async (_, thisEntity, { db }) => {
-            const res = await new Promise((resolve, reject) => {
-                db.getConnection(function (err, conn) {
-                    if (err) {
-                        reject(err);
-                        return;
-                    }
-                    conn.query(
-                        "INSERT INTO entities (id, type, entity) VALUES (UNHEX(?),?,?)",
-                        [
-                            thisEntity.id,
-                            thisEntity.type,
-                            `{"${thisEntity.entity}": ${thisEntity.entity}}`,
-                        ],
-                        (err, res) => {
-                            conn.release();
-                            if (err) {
-                                reject(err);
-                                return;
-                            }
+        addEntity: async (_, data, { logger, db }) => {
+            const r = db.createEntity(data);
+            // logger.info(r);
 
-                            resolve(res);
-                        }
-                    );
-                });
-            });
-            console.log("Added Entity: ", JSON.stringify(res, null, 2));
-            return thisEntity;
+            return true;
         },
-        // will be restored while working with products
-        // updateProduct: async (_, thisProduct, { db }) => {
-        //     const res = await new Promise((resolve, reject) => {
-        //         db.getConnection(function (err, conn) {
-        //             if (err) {
-        //                 reject(err);
-        //                 return;
-        //             }
-        //             conn.query(
-        //                 "UPDATE entities SET type =?, entity =? WHERE id = UNHEX(?)",
-        //                 [
-        //                     thisProduct.title,
-        //                     `{"${thisProduct.entity}": ${thisProduct.entity}}`,
-        //                     thisProduct.id,
-        //                 ],
-        //                 (err, res) => {
-        //                     conn.release();
-        //                     if (err) {
-        //                         reject(err);
-        //                         return;
-        //                     }
-
-        //                     resolve(res);
-        //                 }
-        //             );
-        //         });
-        //     });
-        //     console.log("Updated product: ", JSON.stringify(res, null, 2));
-        //     return res;
-        // },
         restoreEntity: async (_, thisEntity, { db }) => {
             const res = await new Promise((resolve, reject) => {
                 db.getConnection(function (err, conn) {
@@ -136,7 +83,6 @@ const resolvers = {
             console.log("Removed Entity: ", JSON.stringify(res, null, 2));
             return thisEntity;
         },
-
         addTriple: async (_, thisTriple, { db }) => {
             const res = await new Promise((resolve, reject) => {
                 db.getConnection(function (err, conn) {
@@ -215,61 +161,18 @@ const resolvers = {
             return thisTriple;
         },
     },
-    // addProduct: async (_, thisProduct, { db }) => {
-        
-    //     const res = await new Promise((resolve, reject) => {
-    //         db.getConnection(function (err, conn) {
-    //             if (err) {
-    //                 reject(err);
-    //                 return;
-    //             }
-    //             conn.query(
-    //                 "INSERT INTO suggestion_products (id, source, type) VALUES (UNHEX(?),?,?)",
-    //                 [
-    //                     thisProduct.id,
-    //                     thisProduct.source,
-    //                     thisProduct.type,
-    //                 ],
-    //                 (err, res) => {
-    //                     conn.release();
-    //                     if (err) {
-    //                         reject(err);
-    //                         return;
-    //                     }
-
-    //                     resolve(res);
-    //                 }
-    //             );
-    //         });
-    //     });
-    //     console.log("Added Entity: ", JSON.stringify(res, null, 2));
-    //     return thisProduct;
-    // },
     Query: {
-        searchEntity: async (_, thisEntity, { db }) => {
-            const res = await new Promise((resolve, reject) => {
-                db.getConnection(function (err, conn) {
-                    if (err) {
-                        reject(err);
-                        return;
-                    }
-                    conn.query(
-                        "SELECT * FROM entities WHERE id = UNHEX(?)",
-                        [thisEntity.id],
-                        (err, res) => {
-                            conn.release();
-                            if (err) {
-                                reject(err);
-                                return;
-                            }
+        searchEntity: async (_, data, { logger, db }) => {
+            const res = await db.getEntity(data);
 
-                            resolve(res);
-                        }
-                    );
-                });
-            });
-            console.log("Search Entity: ", JSON.stringify(res, null, 2));
-            return thisEntity;
+            return {
+                id: res.id,
+                type: res.type,
+                entity: res.entity,
+                created: "a",
+                updated: "a",
+                deleted: 0,
+            };
         },
         allEntities: async (_, o, { db }) => {
             const res = await new Promise((resolve, reject) => {
