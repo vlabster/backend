@@ -1,6 +1,7 @@
 const {
     ProvidedRequiredArgumentsOnDirectivesRule,
 } = require("graphql/validation/rules/ProvidedRequiredArgumentsRule");
+const { id2uuid, uuid2id } = require("../helpers/convertUuid");
 
 const products = [
     {
@@ -42,7 +43,7 @@ const resolvers = {
                     }
                     conn.query(
                         "UPDATE entities SET deleted = ? WHERE id = UNHEX(?)",
-                        [0, thisEntity.id],
+                        [0, uuid2id(thisEntity.id)],
                         (err, res) => {
                             conn.release();
                             if (err) {
@@ -67,7 +68,7 @@ const resolvers = {
                     }
                     conn.query(
                         "UPDATE entities SET deleted = ? WHERE id = UNHEX(?)",
-                        [1, thisEntity.id],
+                        [1, uuid2id(thisEntity.id)],
                         (err, res) => {
                             conn.release();
                             if (err) {
@@ -93,7 +94,7 @@ const resolvers = {
                     conn.query(
                         "INSERT INTO triples (subject, predicate, object, priority) VALUES (UNHEX(?), ?, UNHEX(?), ?)",
                         [
-                            thisTriple.subject,
+                            id2uuid(thisTriple.subject),
                             thisTriple.predicate,
                             thisTriple.object,
                             thisTriple.priority,
@@ -145,7 +146,7 @@ const resolvers = {
                     }
                     conn.query(
                         "UPDATE triples SET deleted = ? WHERE subject = UNHEX(?)",
-                        [thisTriple.deleted, thisTriple.subject],
+                        [thisTriple.deleted, uuid2id(thisTriple.subject)],
                         (err, res) => {
                             conn.release();
                             if (err) {
@@ -159,6 +160,35 @@ const resolvers = {
             });
             console.log("Removed Triple: ", JSON.stringify(res, null, 2));
             return thisTriple;
+        },
+        addProduct: async (_, thisProduct, { db }) => {
+            const res = await new Promise((resolve, reject) => {
+                db.getConnection(function (err, conn) {
+                    if (err) {
+                        reject(err);
+                        return;
+                    }
+                    conn.query(
+                        "INSERT INTO suggestion_products (id, source, type) VALUES (UNHEX(?),?,?)",
+                        [
+                            id2uuid(thisProduct.id),
+                            thisProduct.source,
+                            thisProduct.type,
+                        ],
+                        (err, res) => {
+                            conn.release();
+                            if (err) {
+                                reject(err);
+                                return;
+                            }
+
+                            resolve(res);
+                        }
+                    );
+                });
+            });
+            console.log("Added Entity: ", JSON.stringify(res, null, 2));
+            return thisProduct;
         },
     },
     Query: {
@@ -242,7 +272,6 @@ const resolvers = {
             console.log("Products: ", JSON.stringify(res, null, 2));
 
             return res;
-            //return products;
         },
         product(parent, args, context, info) {
             return products.filter(
