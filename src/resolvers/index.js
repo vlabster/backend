@@ -30,7 +30,7 @@ const resolvers = {
     Mutation: {
         addEntity: async (_, data, { logger, db }) => {
             const r = db.createEntity(data);
-            // logger.info(r);
+            logger.info(r);
 
             return true;
         },

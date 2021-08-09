@@ -16,6 +16,11 @@ describe.each([
         input: 1234567890,
         expected: "",
     },
+    {
+        name: "put array with length 36 returns empty string",
+        input: new Array(36),
+        expected: "",
+    },
 ])("convert uuid to id", ({ name, input, expected }) => {
     test(name, () => {
         expect(uuid2id(input)).toEqual(expected);
@@ -36,6 +41,11 @@ describe.each([
     {
         name: "put number returns empty string",
         input: 1234567890,
+        expected: "",
+    },
+    {
+        name: "put array with length 32 returns empty string",
+        input: new Array(32),
         expected: "",
     },
 ])("convert id to uuid", ({ name, input, expected }) => {
