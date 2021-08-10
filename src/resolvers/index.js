@@ -30,7 +30,7 @@ const resolvers = {
     Mutation: {
         addEntity: async (_, data, { logger, db }) => {
             const r = db.createEntity(data);
-            logger.info(r);
+            //logger.info(r);
 
             return true;
         },
@@ -194,7 +194,6 @@ const resolvers = {
     Query: {
         searchEntity: async (_, data, { logger, db }) => {
             const res = await db.getEntity(data);
-
             return {
                 id: res.id,
                 type: res.type,
@@ -205,28 +204,7 @@ const resolvers = {
             };
         },
         allEntities: async (_, o, { db }) => {
-            const res = await new Promise((resolve, reject) => {
-                db.getConnection(function (err, conn) {
-                    if (err) {
-                        reject(err);
-                        return;
-                    }
-
-                    conn.query("SELECT * from entities", (err, res) => {
-                        conn.release();
-
-                        if (err) {
-                            reject(err);
-                            return;
-                        }
-
-                        resolve(res);
-                    });
-                });
-            });
-
-            console.log("Entities: ", JSON.stringify(res, null, 2));
-
+            const res = await db.getAllEntities();
             return res;
         },
         allTriples: async (_, o, { db }) => {

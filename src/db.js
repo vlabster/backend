@@ -1,4 +1,26 @@
+//const { id2uuid, uuid2id } = require('./helpers/convertUuid');
+
 const orm = (pool, logger) => {
+    const getAllEntities = async (data) => {
+        const r = await new Promise((resolve, reject) => {
+            pool.getConnection((err, conn) => {
+                if (err) {
+                    logger.error("failed getting connection", err);
+                    reject(err);
+
+                    return;
+                }
+
+                conn.query(
+                    "SELECT * from entities",
+                    (err, res) => releaseConn(conn, err, res, resolve, reject)
+                );
+            });
+        });
+
+        return r;
+    };
+
     const getEntity = async (data) => {
         const r = await new Promise((resolve, reject) => {
             pool.getConnection((err, conn) => {
@@ -21,6 +43,7 @@ const orm = (pool, logger) => {
     };
 
     const createEntity = async (data) =>
+
         await new Promise((resolve, reject) =>
             pool.getConnection((err, conn) => {
                 if (err) {
@@ -32,7 +55,7 @@ const orm = (pool, logger) => {
 
                 conn.query(
                     "INSERT entities (id, type, entity) VALUES (UNHEX(?),?,?)",
-                    [data.id, data.type, data.entity],
+                    [id, data.type, data.entity],
                     (err, res) => releaseConn(conn, err, res, resolve, reject)
                 );
             })
@@ -87,7 +110,7 @@ const orm = (pool, logger) => {
         resolve(res);
     };
 
-    return { getEntity, createEntity, updateEntity, removeEntity };
+    return { getAllEntities, getEntity, createEntity, updateEntity, removeEntity };
 };
 
 module.exports = { orm };
