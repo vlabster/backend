@@ -97,6 +97,48 @@ const orm = (pool, logger) => {
             })
         );
 
+    const getAllProducts = async (data) => {
+        const r = await new Promise((resolve, reject) => {
+            pool.getConnection((err, conn) => {
+                if (err) {
+                    logger.error("failed getting connection", err);
+                    reject(err);
+
+                    return;
+                }
+
+                conn.query(
+                    "SELECT id, source, type from suggestion_products",
+                    (err, res) => releaseConn(conn, err, res, resolve, reject)
+                );
+            });
+        });
+
+        return r;
+    };
+
+    const addProduct = async (data) =>
+        await new Promise((resolve, reject) =>
+            pool.getConnection((err, conn) => {
+                if (err) {
+                    logger.error("failed getting connection", err);
+                    reject(err);
+
+                    return;
+                }
+
+                conn.query(
+                    "INSERT INTO suggestion_products (id, source, type) VALUES (UNHEX(?),?,?)",
+                    [
+                        data.id,
+                        data.source,
+                        data.type,
+                    ],
+                    (err, res) => releaseConn(conn, err, res, resolve, reject)
+                );
+            })
+        );
+
     const releaseConn = (conn, err, res, resolve, reject) => {
         conn.release();
         if (err) {
@@ -110,7 +152,7 @@ const orm = (pool, logger) => {
         resolve(res);
     };
 
-    return { getAllEntities, getEntity, createEntity, updateEntity, removeEntity };
+    return { getAllEntities, getEntity, createEntity, updateEntity, removeEntity, getAllProducts, addProduct };
 };
 
 module.exports = { orm };

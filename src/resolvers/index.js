@@ -161,34 +161,11 @@ const resolvers = {
             console.log("Removed Triple: ", JSON.stringify(res, null, 2));
             return thisTriple;
         },
-        addProduct: async (_, thisProduct, { db }) => {
-            const res = await new Promise((resolve, reject) => {
-                db.getConnection(function (err, conn) {
-                    if (err) {
-                        reject(err);
-                        return;
-                    }
-                    conn.query(
-                        "INSERT INTO suggestion_products (id, source, type) VALUES (UNHEX(?),?,?)",
-                        [
-                            id2uuid(thisProduct.id),
-                            thisProduct.source,
-                            thisProduct.type,
-                        ],
-                        (err, res) => {
-                            conn.release();
-                            if (err) {
-                                reject(err);
-                                return;
-                            }
+        addProduct: async (_, data, { logger, db }) => {
+            const r = db.addProduct(data);
+            //logger.info(r);
 
-                            resolve(res);
-                        }
-                    );
-                });
-            });
-            console.log("Added Entity: ", JSON.stringify(res, null, 2));
-            return thisProduct;
+            return true;
         },
     },
     Query: {
@@ -205,6 +182,7 @@ const resolvers = {
         },
         allEntities: async (_, o, { db }) => {
             const res = await db.getAllEntities();
+            console.log(res)
             return res;
         },
         allTriples: async (_, o, { db }) => {
@@ -228,27 +206,8 @@ const resolvers = {
             return res;
         },
         allProducts: async (_, o, { db }) => {
-            const res = await new Promise((resolve, reject) => {
-                db.getConnection(function (err, conn) {
-                    if (err) {
-                        reject(err);
-                        return;
-                    }
-                    conn.query(
-                        "SELECT HEX(id) as id, source, type FROM suggestion_products",
-                        (err, res) => {
-                            conn.release();
-                            if (err) {
-                                reject(err);
-                                return;
-                            }
-                            resolve(res);
-                        }
-                    );
-                });
-            });
-            console.log("Products: ", JSON.stringify(res, null, 2));
-
+            const res = await db.getAllProducts();
+            console.log(res);
             return res;
         },
         product(parent, args, context, info) {
