@@ -55,7 +55,7 @@ const orm = (pool, logger) => {
 
                 conn.query(
                     "INSERT entities (id, type, entity) VALUES (UNHEX(?),?,?)",
-                    [id, data.type, data.entity],
+                    [data.id, data.type, data.entity],
                     (err, res) => releaseConn(conn, err, res, resolve, reject)
                 );
             })
