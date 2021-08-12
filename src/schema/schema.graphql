@@ -33,16 +33,16 @@ type Product implements Node {
 type Query {
     books: [Book]
     allEntities: [Entity]
-    allProducts: [TestProduct]
+    allProducts: [SuggestProduct]
     searchEntity(id: ID!): Entity
     allTriples: [Triple]
     product(title: String!): [Product]
 }
 
-type TestProduct {
+type SuggestProduct {
     id: ID!
     source: String!
-    type: String
+    type: String!
 }
 
 interface Node {
@@ -51,6 +51,11 @@ interface Node {
 
 input SearchProductInput {
     query: String!
+}
+
+input ProductInput {
+    id: ID!
+    title: String!
 }
 
 type Mutation {
@@ -64,7 +69,7 @@ type Mutation {
     removeTriple(subject: ID!, deleted: Int): Triple
 
     addEntity(id: ID!, type: String!, entity: String!): Boolean!
-    addProduct(id: ID!, source: String!, type: String): Boolean
+    addProduct(input: ProductInput!): Boolean!
     # updateProduct(
     #     id: ID!
     #     title: String

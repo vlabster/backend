@@ -146,7 +146,7 @@ const resolvers = {
                     }
                     conn.query(
                         "UPDATE triples SET deleted = ? WHERE subject = UNHEX(?)",
-                        [thisTriple.deleted, uuid2id(thisTriple.subject)],
+                        [thisTriple.deleted, thisTriple.subject],
                         (err, res) => {
                             conn.release();
                             if (err) {
@@ -161,8 +161,18 @@ const resolvers = {
             console.log("Removed Triple: ", JSON.stringify(res, null, 2));
             return thisTriple;
         },
-        addProduct: async (_, data, { logger, db }) => {
-            const r = db.addProduct(data);
+        addProduct: async (_, { input }, { logger, db }) => {
+            const rEntity = db.createEntity({
+                id: uuid2id(input.id),
+                type: "ru.webrx.product",
+                entity: JSON.stringify({ title: input.title}) ,
+            });
+            const rSuggest = db.addSuggest({
+                id: uuid2id(input.id),
+                source: input.title,
+                type: "ru.webrx.product"
+            });
+
             //logger.info(r);
 
             return true;
@@ -182,7 +192,7 @@ const resolvers = {
         },
         allEntities: async (_, o, { db }) => {
             const res = await db.getAllEntities();
-            console.log(res)
+
             return res;
         },
         allTriples: async (_, o, { db }) => {
@@ -207,7 +217,7 @@ const resolvers = {
         },
         allProducts: async (_, o, { db }) => {
             const res = await db.getAllProducts();
-            console.log(res);
+
             return res;
         },
         product(parent, args, context, info) {

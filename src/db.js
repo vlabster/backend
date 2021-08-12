@@ -12,7 +12,7 @@ const orm = (pool, logger) => {
                 }
 
                 conn.query(
-                    "SELECT * from entities",
+                    "SELECT id, type, entity, created, updated, deleted from entities",
                     (err, res) => releaseConn(conn, err, res, resolve, reject)
                 );
             });
@@ -117,7 +117,7 @@ const orm = (pool, logger) => {
         return r;
     };
 
-    const addProduct = async (data) =>
+    const addSuggest = async (data) =>
         await new Promise((resolve, reject) =>
             pool.getConnection((err, conn) => {
                 if (err) {
@@ -152,7 +152,7 @@ const orm = (pool, logger) => {
         resolve(res);
     };
 
-    return { getAllEntities, getEntity, createEntity, updateEntity, removeEntity, getAllProducts, addProduct };
+    return { getAllEntities, getEntity, createEntity, updateEntity, removeEntity, getAllProducts, addSuggest };
 };
 
 module.exports = { orm };
