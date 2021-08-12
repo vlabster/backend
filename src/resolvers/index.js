@@ -165,7 +165,7 @@ const resolvers = {
             const rEntity = db.createEntity({
                 id: uuid2id(input.id),
                 type: "ru.webrx.product",
-                entity: JSON.stringify({ title: input.title}) ,
+                entity: JSON.stringify({ title: input.title, description: input.description}),
             });
             const rSuggest = db.addSuggest({
                 id: uuid2id(input.id),
