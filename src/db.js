@@ -108,7 +108,7 @@ const orm = (pool, logger) => {
                 }
 
                 conn.query(
-                    "SELECT subject, predicate, object, priority, deleted from triples",
+                    "SELECT subject, predicate, object, priority from triples WHERE deleted = 0",
                     (err, res) => releaseConn(conn, err, res, resolve, reject)
                 );
             });
@@ -128,7 +128,7 @@ const orm = (pool, logger) => {
                 }
 
                 conn.query(
-                    "SELECT HEX(subject) as subject, predicate, object, priority, deleted FROM triples WHERE subject = UNHEX(?) and deleted = 0",
+                    "SELECT HEX(subject) as subject, predicate, object, priority FROM triples WHERE subject = UNHEX(?) and deleted = 0",
                     [data.subject],
                     (err, res) => releaseConn(conn, err, res, resolve, reject)
                 );
@@ -190,8 +190,8 @@ const orm = (pool, logger) => {
                 }
 
                 conn.query(
-                    "UPDATE triples SET deleted = ? WHERE subject = UNHEX(?)",
-                    [data.deleted, data.subject],
+                    "UPDATE triples SET deleted = 1 WHERE subject = UNHEX(?)",
+                    [data.subject],
                     (err, res) => releaseConn(conn, err, res, resolve, reject)
                 );
             })
