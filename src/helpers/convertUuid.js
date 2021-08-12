@@ -6,13 +6,13 @@ function uuid2id(v) {
         return "";
     }
 
-    const first = v.slice(0, 8);
-    const second = v.slice(9, 13);
-    const third = v.slice(14, 18);
-    const fourth = v.slice(19, 23);
-    const other = v.slice(24);
+    const time_low = v.slice(0, 8);
+    const time_mid = v.slice(9, 13);
+    const time_hi = v.slice(14, 18);
+    const clock_seq_hi = v.slice(19, 23);
+    const node = v.slice(24);
 
-    return third + second + first + fourth + other;
+    return time_hi + time_mid + time_low + clock_seq_hi + node;
 }
 
 // 11d8eebc58e0a7d796690800200c9a66 => 58e0a7d7-eebc-11d8-9669-0800200c9a66
@@ -21,13 +21,13 @@ function id2uuid(v) {
         return "";
     }
 
-    const first = v.slice(0, 4);
-    const second = v.slice(4, 8);
-    const third = v.slice(8, 16);
-    const fourth = v.slice(16, 20);
-    const other = v.slice(20);
+    const time_low = v.slice(0, 4);
+    const time_mid = v.slice(4, 8);
+    const time_hi = v.slice(8, 16);
+    const clock_seq_hi = v.slice(16, 20);
+    const node = v.slice(20);
 
-    return third + "-" + second + "-" + first + "-" + fourth + "-" + other;
+    return time_hi + "-" + time_mid + "-" + time_low + "-" + clock_seq_hi + "-" + node;
 }
 
 module.exports = { id2uuid, uuid2id };
