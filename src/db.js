@@ -1,7 +1,7 @@
 //const { id2uuid, uuid2id } = require('./helpers/convertUuid');
 
 const orm = (pool, logger) => {
-    const getAllEntities = async (data) => {
+    const getAllEntities = async () => {
         const r = await new Promise((resolve, reject) => {
             pool.getConnection((err, conn) => {
                 if (err) {
@@ -97,7 +97,107 @@ const orm = (pool, logger) => {
             })
         );
 
-    const getAllProducts = async (data) => {
+    const getAllTriples = async () => {
+        const r = await new Promise((resolve, reject) => {
+            pool.getConnection((err, conn) => {
+                if (err) {
+                    logger.error("failed getting connection", err);
+                    reject(err);
+
+                    return;
+                }
+
+                conn.query(
+                    "SELECT subject, predicate, object, priority, deleted from triples",
+                    (err, res) => releaseConn(conn, err, res, resolve, reject)
+                );
+            });
+        });
+
+        return r;
+    };
+
+    const getTriple = async (data) => {
+        const r = await new Promise((resolve, reject) => {
+            pool.getConnection((err, conn) => {
+                if (err) {
+                    logger.error("failed getting connection", err);
+                    reject(err);
+
+                    return;
+                }
+
+                conn.query(
+                    "SELECT HEX(subject) as subject, predicate, object, priority, deleted FROM triples WHERE subject = UNHEX(?) and deleted = 0",
+                    [data.subject],
+                    (err, res) => releaseConn(conn, err, res, resolve, reject)
+                );
+            });
+        });
+
+        return r[0];
+    };
+
+    const createTriple = async (data) =>
+        await new Promise((resolve, reject) =>
+            pool.getConnection((err, conn) => {
+                if (err) {
+                    logger.error("failed getting connection", err);
+                    reject(err);
+
+                    return;
+                }
+
+                conn.query(
+                    "INSERT INTO triples (subject, predicate, object, priority) VALUES (UNHEX(?), ?, UNHEX(?), ?)",
+                    [
+                        data.subject,
+                        data.predicate,
+                        data.object,
+                        data.priority,
+                    ],
+                    (err, res) => releaseConn(conn, err, res, resolve, reject)
+                );
+            })
+        );
+
+    const updateTriple = async (data) =>
+        await new Promise((resolve, reject) =>
+            pool.getConnection((err, conn) => {
+                if (err) {
+                    logger.error("failed getting connection", err);
+                    reject(err);
+
+                    return;
+                }
+
+                conn.query(
+                    "UPDATE triples SET priority = ? WHERE subject = UNHEX(?)",
+                    [data.priority, data.subject],
+                    (err, res) => releaseConn(conn, err, res, resolve, reject)
+                );
+            })
+        );
+
+    const removeTriple = async (data) =>
+        await new Promise((resolve, reject) =>
+            pool.getConnection((err, conn) => {
+                if (err) {
+                    logger.error("failed getting connection", err);
+                    reject(err);
+
+                    return;
+                }
+
+                conn.query(
+                    "UPDATE triples SET deleted = ? WHERE subject = UNHEX(?)",
+                    [data.deleted, data.subject],
+                    (err, res) => releaseConn(conn, err, res, resolve, reject)
+                );
+            })
+        );
+
+    const getAllProducts = async () => {
         const r = await new Promise((resolve, reject) => {
             pool.getConnection((err, conn) => {
                 if (err) {
@@ -152,7 +252,22 @@ const orm = (pool, logger) => {
         resolve(res);
     };
 
-    return { getAllEntities, getEntity, createEntity, updateEntity, removeEntity, getAllProducts, addSuggest };
+    return {
+        getAllEntities,
+        getEntity,
+        createEntity,
+        updateEntity,
+        removeEntity,
+
+        getAllTriples,
+        getTriple,
+        createTriple,
+        updateTriple,
+        removeTriple,
+
+        getAllProducts,
+        addSuggest
+    };
 };
 
 module.exports = { orm };
