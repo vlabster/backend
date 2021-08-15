@@ -238,6 +238,27 @@ const orm = (pool, logger) => {
                 );
             })
         );
+    const addFolder = async (data) =>
+        await new Promise((resolve, reject) =>
+            pool.getConnection((err, conn) => {
+                if (err) {
+                    logger.error("failed getting connection", err);
+                    reject(err);
+
+                    return;
+                }
+
+                conn.query(
+                    "INSERT INTO pharmacies (id, source, type) VALUES (UNHEX(?),?,?)",
+                    [
+                        data.id,
+                        data.source,
+                        data.type,
+                    ],
+                    (err, res) => releaseConn(conn, err, res, resolve, reject)
+                );
+            })
+        );
 
     const releaseConn = (conn, err, res, resolve, reject) => {
         conn.release();
@@ -266,7 +287,9 @@ const orm = (pool, logger) => {
         removeTriple,
 
         getAllProducts,
-        addSuggest
+        addSuggest,
+
+        addFolder
     };
 };
 
