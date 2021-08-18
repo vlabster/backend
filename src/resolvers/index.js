@@ -29,7 +29,7 @@ const products = [
 const resolvers = {
     Mutation: {
         addEntity: async (_, data, { logger, db }) => {
-            const r = db.createEntity(data);
+            const r = await db.createEntity(data);
             //logger.info(r);
 
             return true;
@@ -105,29 +105,43 @@ const resolvers = {
             return res;
         },
         addProduct: async (_, { input }, { logger, db }) => {
-            const rEntity = db.createEntity({
-                id: uuid2id(input.id),
-                type: "ru.webrx.product",
-                entity: JSON.stringify({ title: input.title, description: input.description }),
-            });
-            const rSuggest = db.addSuggest({
-                id: uuid2id(input.id),
-                source: input.title,
-                type: "ru.webrx.product"
-            });
+            const id = uuid2id(input.id);
+            if (id === "") return;
 
-            //logger.info(r);
+            try {
+                const rEntity = await db.createEntity({
+                    id: id,
+                    type: "ru.webrx.product",
+                    entity: JSON.stringify(input),
+                });
+                const rSuggest = await db.addSuggest({
+                    id: id,
+                    source: input.title,
+                    type: "ru.webrx.product"
+                });
 
-            return true;
+                return true;
+            } catch (error) {
+                console.log("ERROR: ", error);
+                return;
+            }
         },
         addFolder: async (_, { input }, { logger, db }) => {
-            const r = db.createEntity({
-                id: uuid2id(input.id),
-                type: "ru.webrx.folder",
-                entity: JSON.stringify({ title: input.title, description: input.description }),
-            });
+            const id = uuid2id(input.id);
+            if (id === "") return;
 
-            return true;
+            try {
+                const r = await db.createEntity({
+                    id: id,
+                    type: "ru.webrx.folder",
+                    entity: JSON.stringify(input),
+                });
+
+                return true;
+            } catch (error) {
+                console.log("ERROR: ", error);
+                return;
+            }
         },
     },
     Query: {
