@@ -120,6 +120,15 @@ const resolvers = {
 
             return true;
         },
+        addFolder: async (_, { input }, { logger, db }) => {
+            const r = db.createEntity({
+                id: uuid2id(input.id),
+                type: "ru.webrx.folder",
+                entity: JSON.stringify({ title: input.title, description: input.description }),
+            });
+
+            return true;
+        },
     },
     Query: {
         searchEntity: async (_, data, { logger, db }) => {
