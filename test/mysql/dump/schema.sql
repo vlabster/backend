@@ -34,9 +34,9 @@ CREATE TABLE suggestion_products (
 
 SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci;
 
-INSERT INTO suggestion_products VALUES("4a766b146dbd127aa510d61c32035764", 'Капецитабин', 'Таблетки');
+INSERT INTO suggestion_products VALUES(101, 'Капецитабин', 'Таблетки');
 
-INSERT INTO entities VALUES("4a766b146dbd127aa510d61c32035765", 'test1', '{"1": 1}', "2008-10-23 10:37:22", "2008-10-23 10:37:22", 0);
-INSERT INTO entities VALUES("4a766b146dbd127aa510d61c32035766", 'test2', '{\"2\": 2}', "2010-10-23 10:37:22", "2012-10-23 10:37:22", 1);
+INSERT INTO entities VALUES(1, 'test1', '{"1": 1}', "2008-10-23 10:37:22", "2008-10-23 10:37:22", 0);
+INSERT INTO entities VALUES(2, 'test2', '{\"2\": 2}', "2010-10-23 10:37:22", "2012-10-23 10:37:22", 1);
 
 
