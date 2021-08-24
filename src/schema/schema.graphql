@@ -66,6 +66,11 @@ input FolderInput {
     description: String
 }
 
+input VendorInput {
+    id: ID!
+    title: String!
+}
+
 type Mutation {
     addTriple(
         subject: ID!
@@ -79,6 +84,7 @@ type Mutation {
     addEntity(id: ID!, type: String!, entity: String!): Boolean!
     addProduct(input: ProductInput!): Boolean!
     addFolder(input: FolderInput!): Boolean!
+    addVendor(input: VendorInput!): Boolean!
     # updateProduct(
     #     id: ID!
     #     title: String

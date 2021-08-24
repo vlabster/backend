@@ -143,6 +143,23 @@ const resolvers = {
                 return;
             }
         },
+        addVendor: async (_, { input }, { logger, db }) => {
+            const id = uuid2id(input.id);
+            if (id === "") return;
+
+            try {
+                const r = await db.createEntity({
+                    id: id,
+                    type: "ru.webrx.vendor",
+                    entity: JSON.stringify(input),
+                });
+
+                return true;
+            } catch (error) {
+                console.log("ERROR: ", error);
+                return;
+            }
+        },
     },
     Query: {
         searchEntity: async (_, data, { logger, db }) => {
