@@ -13,7 +13,7 @@ sudo systemctl enable docker
 for start project on local use:
 make dev
 
-if you work with db and want to see changes use: 
+if you work with db and want to see changes use:
 make clean dev
 
 ### Environment
@@ -25,3 +25,5 @@ make clean dev
 | MYSQL_PASSWORD |             |         |
 | MYSQL_DBNAME   |             |         |
 | BACKEND_PORT   |             |         |
+
+1
