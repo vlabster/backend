@@ -26,4 +26,8 @@ make clean dev
 | MYSQL_DBNAME   |             |         |
 | BACKEND_PORT   |             |         |
 
-1
+for view table data:
+-entities
+docker exec -it backend_mysql_1 mysql -u root -pqwerty stock -e "select hex(id), type,entity from entities"
+-triples
+docker exec -it backend_mysql_1 mysql -u root -pqwerty stock -e "select hex(subject), predicate object from triples"
