@@ -38,12 +38,18 @@ type Query {
     searchEntity(id: ID!): Entity
     allTriples: [Triple]
     product(title: String!): [Product]
+    paginationProduct(title: String!, currPage: Int!): PaginatedProducts
 }
 
 type SuggestProduct {
     id: ID!
     source: String!
     type: String!
+}
+
+type PaginatedProducts {
+    products: [Product]
+    totalCount: Int!
 }
 
 interface Node {
