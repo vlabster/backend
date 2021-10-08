@@ -1,3 +1,5 @@
+/* eslint-disable complexity */
+/* eslint-disable sort-keys */
 const {
     ProvidedRequiredArgumentsOnDirectivesRule,
 } = require("graphql/validation/rules/ProvidedRequiredArgumentsRule");
@@ -36,7 +38,7 @@ const resolvers = {
         },
         restoreEntity: async (_, thisEntity, { db }) => {
             const res = await new Promise((resolve, reject) => {
-                db.getConnection(function (err, conn) {
+                db.getConnection(function(err, conn) {
                     if (err) {
                         reject(err);
                         return;
@@ -61,7 +63,7 @@ const resolvers = {
         },
         removeEntity: async (_, thisEntity, { db }) => {
             const res = await new Promise((resolve, reject) => {
-                db.getConnection(function (err, conn) {
+                db.getConnection(function(err, conn) {
                     if (err) {
                         reject(err);
                         return;
@@ -106,7 +108,9 @@ const resolvers = {
         },
         addProduct: async (_, { input }, { logger, db }) => {
             const id = uuid2id(input.id);
-            if (id === "") return;
+            if (id === "") {
+                return;
+            }
 
             try {
                 const rEntity = await db.createEntity({
@@ -128,7 +132,9 @@ const resolvers = {
         },
         addFolder: async (_, { input }, { logger, db }) => {
             const id = uuid2id(input.id);
-            if (id === "") return;
+            if (id === "") {
+                return;
+            }
 
             try {
                 const r = await db.createEntity({
@@ -145,8 +151,9 @@ const resolvers = {
         },
         addVendor: async (_, { input }, { logger, db }) => {
             const id = uuid2id(input.id);
-            if (id === "") return;
-
+            if (id === "") {
+                return;
+            }
             try {
                 const r = await db.createEntity({
                     id: id,
@@ -188,14 +195,19 @@ const resolvers = {
 
             return res;
         },
-        product(parent, args, context, info) {
-            return products.filter(
-                (product) =>
-                    args.title.length > 2 &&
-                    product.title
-                        .toLowerCase()
-                        .indexOf(args.title.toLowerCase()) > -1
-            );
+        // product(parent, args, context, info) {
+        //     return products.filter(
+        //         (product) =>
+        //             args.title.length > 2 &&
+        //             product.title
+        //                 .toLowerCase()
+        //                 .indexOf(args.title.toLowerCase()) > -1
+        //     );
+        // },
+        searchProduct: async (_, data, { db }) => {
+            const res = await db.getProduct(data);
+
+            return res;
         },
     },
 };
