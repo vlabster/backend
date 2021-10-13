@@ -38,7 +38,7 @@ const resolvers = {
         },
         restoreEntity: async (_, thisEntity, { db }) => {
             const res = await new Promise((resolve, reject) => {
-                db.getConnection(function(err, conn) {
+                db.getConnection(function (err, conn) {
                     if (err) {
                         reject(err);
                         return;
@@ -63,7 +63,7 @@ const resolvers = {
         },
         removeEntity: async (_, thisEntity, { db }) => {
             const res = await new Promise((resolve, reject) => {
-                db.getConnection(function(err, conn) {
+                db.getConnection(function (err, conn) {
                     if (err) {
                         reject(err);
                         return;
@@ -116,7 +116,11 @@ const resolvers = {
                 const rEntity = await db.createEntity({
                     id: id,
                     type: "ru.webrx.product",
-                    entity: JSON.stringify(input),
+                    entity: JSON.stringify({
+                        id: id,
+                        title: input.title,
+                        description: input.description,
+                    }),
                 });
                 const rSuggest = await db.addSuggest({
                     id: id,
@@ -205,9 +209,21 @@ const resolvers = {
         //     );
         // },
         searchProduct: async (_, data, { db }) => {
-            const res = await db.getProduct(data);
+            const foundSuggests = await db.getSuggests(data);
 
-            return res;
+            // const suggestIds = foundSuggests.map((entity) => entity.id);
+            // -> ["43623F2F97B972A4A9DBA528DE29AB72", "4518987C5F048A708176A7AA4D641162"];
+            // const foundEntitiesById = await db.getEntitiesByArrOfId(arrId);
+            // -> []
+
+            const foundEntities = await Promise.all(
+                foundSuggests.map(async (entity) => {
+                    const rEnt = await db.getEntity(entity);
+                    return JSON.parse(rEnt.entity);
+                })
+            );
+
+            return foundEntities;
         },
     },
 };

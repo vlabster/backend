@@ -42,8 +42,28 @@ const orm = (pool, logger) => {
         return r[0];
     };
 
-    const createEntity = async (data) =>
+    const getEntitiesByArrOfId = async (data) => {
+        const r = await new Promise((resolve, reject) => {
+            pool.getConnection((err, conn) => {
+                if (err) {
+                    logger.error("failed getting connection", err);
+                    reject(err);
 
+                    return;
+                }
+
+                conn.query(
+                    "SELECT HEX(id) as id, type, entity FROM entities WHERE id IN (?)",
+                    [data],
+                    (err, res) => releaseConn(conn, err, res, resolve, reject)
+                );
+            });
+        });
+
+        return r;
+    };
+
+    const createEntity = async (data) =>
         await new Promise((resolve, reject) =>
             pool.getConnection((err, conn) => {
                 if (err) {
@@ -197,7 +217,7 @@ const orm = (pool, logger) => {
             })
         );
 
-    const getProduct = async (data) => {
+    const getSuggests = async (data) => {
         const r = await new Promise((resolve, reject) => {
             pool.getConnection((err, conn) => {
                 if (err) {
@@ -208,17 +228,14 @@ const orm = (pool, logger) => {
                 }
 
                 conn.query(
-                    "SELECT entities.entity FROM entities " +
-                    "INNER JOIN suggestion_products ON suggestion_products.id = entities.id " +
-                    "WHERE suggestion_products.source LIKE '%" + data.title + "%' ",
+                    "SELECT HEX(id) as id, source, type FROM suggestion_products " +
+                    "WHERE source LIKE '%" + data.title + "%' ",
                     (err, res) => releaseConn(conn, err, res, resolve, reject)
                 );
             });
         });
 
-        const parsedEntities = r.map((el) => JSON.parse(el.entity));
-
-        return parsedEntities;
+        return r;
     };
 
     // const getPaginatedProducts = async (data) => {
@@ -319,9 +336,11 @@ const orm = (pool, logger) => {
         updateTriple,
         removeTriple,
 
-        getProduct,
+        getSuggests,
         getAllProducts,
-        addSuggest
+        addSuggest,
+
+        getEntitiesByArrOfId
     };
 };
 
