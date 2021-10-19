@@ -1,16 +1,14 @@
 /* eslint-disable complexity */
 
-function prepareGueryGetEntities(arrOfId) {
+function prepareQueryWhereInIDs(IDs) {
 
-    if (!arrOfId || !arrOfId.length) {
-        return new Error("No id");
+    if (!Array.isArray(IDs) || IDs.length === 0) {
+        return new Error("failed to prepare the query, the ID array is empty");
     }
 
-    const withUnhex = arrOfId.map(id => {
-        return "UNHEX('" + id + "')";
-    }).join(", ");
+    const withUnhex = IDs.map(id => `UNHEX('${id}')`).join(", ");
 
-    return "SELECT HEX(id) as id, type, entity FROM entities WHERE id IN (" + withUnhex + ")";
+    return withUnhex;
 }
 
-module.exports = { prepareGueryGetEntities };
+module.exports = { prepareQueryWhereInIDs };

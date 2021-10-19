@@ -4,7 +4,7 @@ const {
     ProvidedRequiredArgumentsOnDirectivesRule,
 } = require("graphql/validation/rules/ProvidedRequiredArgumentsRule");
 const { id2uuid, uuid2id } = require("../helpers/convertUuid");
-const { prepareGueryGetEntities } = require("../helpers/createQuery");
+const { prepareQueryWhereInIDs } = require("../helpers/createQuery");
 
 const products = [
     {
@@ -218,8 +218,8 @@ const resolvers = {
 
             const suggestIds = foundSuggests.map((entity) => entity.id);
 
-            const getQuery = prepareGueryGetEntities(suggestIds);
-            const foundEntities = await db.getEntities(getQuery);
+            const getIDsWithX = prepareQueryWhereInIDs(suggestIds);
+            const foundEntities = await db.getEntities(getIDsWithX);
 
             return foundEntities;
         },
