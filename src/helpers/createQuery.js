@@ -6,9 +6,7 @@ function prepareQueryWhereInIDs(IDs) {
         return new Error("failed to prepare the query, the ID array is empty");
     }
 
-    const withUnhex = IDs.map(id => `UNHEX('${id}')`).join(", ");
-
-    return withUnhex;
+    return IDs.map(id => `UNHEX('${id}')`).join(", ");
 }
 
 module.exports = { prepareQueryWhereInIDs };
