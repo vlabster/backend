@@ -1,4 +1,3 @@
-/* eslint-disable complexity */
 /* eslint-disable no-magic-numbers */
 
 //58e0a7d7-eebc-11d8-9669-0800200c9a66 => 11d8eebc58e0a7d796690800200c9a66

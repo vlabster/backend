@@ -1,4 +1,3 @@
-/* eslint-disable complexity */
 /* eslint-disable sort-keys */
 const {
     ProvidedRequiredArgumentsOnDirectivesRule,
@@ -39,7 +38,7 @@ const resolvers = {
         },
         restoreEntity: async (_, thisEntity, { db }) => {
             const res = await new Promise((resolve, reject) => {
-                db.getConnection(function (err, conn) {
+                db.getConnection(function(err, conn) {
                     if (err) {
                         reject(err);
                         return;
@@ -64,7 +63,7 @@ const resolvers = {
         },
         removeEntity: async (_, thisEntity, { db }) => {
             const res = await new Promise((resolve, reject) => {
-                db.getConnection(function (err, conn) {
+                db.getConnection(function(err, conn) {
                     if (err) {
                         reject(err);
                         return;
