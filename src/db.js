@@ -42,7 +42,7 @@ const orm = (pool, logger) => {
         return r[0];
     };
 
-    const getEntitiesByArrOfId = async (data) => {
+    const getEntities = async (query) => {
         const r = await new Promise((resolve, reject) => {
             pool.getConnection((err, conn) => {
                 if (err) {
@@ -53,8 +53,7 @@ const orm = (pool, logger) => {
                 }
 
                 conn.query(
-                    "SELECT HEX(id) as id, type, entity FROM entities WHERE id IN (?)",
-                    [data],
+                    query,
                     (err, res) => releaseConn(conn, err, res, resolve, reject)
                 );
             });
@@ -340,7 +339,7 @@ const orm = (pool, logger) => {
         getAllProducts,
         addSuggest,
 
-        getEntitiesByArrOfId
+        getEntities
     };
 };
 

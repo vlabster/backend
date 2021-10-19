@@ -4,6 +4,7 @@ const {
     ProvidedRequiredArgumentsOnDirectivesRule,
 } = require("graphql/validation/rules/ProvidedRequiredArgumentsRule");
 const { id2uuid, uuid2id } = require("../helpers/convertUuid");
+const { prepareGueryGetEntities } = require("../helpers/createQuery");
 
 const products = [
     {
@@ -211,17 +212,14 @@ const resolvers = {
         searchProduct: async (_, data, { db }) => {
             const foundSuggests = await db.getSuggests(data);
 
-            // const suggestIds = foundSuggests.map((entity) => entity.id);
-            // -> ["43623F2F97B972A4A9DBA528DE29AB72", "4518987C5F048A708176A7AA4D641162"];
-            // const foundEntitiesById = await db.getEntitiesByArrOfId(arrId);
-            // -> []
+            if (!foundSuggests.length) {
+                return [];
+            }
 
-            const foundEntities = await Promise.all(
-                foundSuggests.map(async (entity) => {
-                    const rEnt = await db.getEntity(entity);
-                    return JSON.parse(rEnt.entity);
-                })
-            );
+            const suggestIds = foundSuggests.map((entity) => entity.id);
+
+            const getQuery = prepareGueryGetEntities(suggestIds);
+            const foundEntities = await db.getEntities(getQuery);
 
             return foundEntities;
         },
