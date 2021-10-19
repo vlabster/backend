@@ -4,7 +4,7 @@ const {
     ProvidedRequiredArgumentsOnDirectivesRule,
 } = require("graphql/validation/rules/ProvidedRequiredArgumentsRule");
 const { id2uuid, uuid2id } = require("../helpers/convertUuid");
-const { prepareQueryWhereInIDs } = require("../helpers/createQuery");
+const { prepareQueryWhereInIDs } = require("../helpers/prepareQuery");
 
 const products = [
     {

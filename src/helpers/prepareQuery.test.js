@@ -1,4 +1,4 @@
-const { prepareQueryWhereInIDs } = require("./createQuery");
+const { errIDsIsEmpty, prepareQueryWhereInIDs } = require("./prepareQuery");
 
 describe.each([
     {
@@ -12,7 +12,7 @@ describe.each([
         name: "with one item",
     },
     {
-        expected: Error("failed to prepare the query, the ID array is empty"),
+        expected: errIDsIsEmpty,
         input: [],
         name: "with empty",
     },
