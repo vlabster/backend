@@ -42,8 +42,27 @@ const orm = (pool, logger) => {
         return r[0];
     };
 
-    const createEntity = async (data) =>
+    const getEntities = async (IDsWithX) => {
+        const r = await new Promise((resolve, reject) => {
+            pool.getConnection((err, conn) => {
+                if (err) {
+                    logger.error("failed getting connection", err);
+                    reject(err);
 
+                    return;
+                }
+
+                conn.query(
+                    `SELECT HEX(id) as id, type, entity FROM entities WHERE id IN (${IDsWithX})`,
+                    (err, res) => releaseConn(conn, err, res, resolve, reject)
+                );
+            });
+        });
+
+        return r;
+    };
+
+    const createEntity = async (data) =>
         await new Promise((resolve, reject) =>
             pool.getConnection((err, conn) => {
                 if (err) {
@@ -197,6 +216,57 @@ const orm = (pool, logger) => {
             })
         );
 
+    const getSuggests = async (data) => {
+        const r = await new Promise((resolve, reject) => {
+            pool.getConnection((err, conn) => {
+                if (err) {
+                    logger.error("failed getting connection", err);
+                    reject(err);
+
+                    return;
+                }
+
+                conn.query(
+                    "SELECT HEX(id) as id, source, type FROM suggestion_products " +
+                    "WHERE source LIKE '%" + data.title + "%' ",
+                    (err, res) => releaseConn(conn, err, res, resolve, reject)
+                );
+            });
+        });
+
+        return r;
+    };
+
+    // const getPaginatedProducts = async (data) => {
+    //     const page = 1;
+    //     const limit = 2;
+    //     const first = (page - 1) * page;
+
+    //     const r = await new Promise((resolve, reject) => {
+    //         pool.getConnection((err, conn) => {
+    //             if (err) {
+    //                 logger.error("failed getting connection", err);
+    //                 reject(err);
+
+    //                 return;
+    //             }
+
+    //             conn.query(
+    //                 "SELECT entities.entity FROM entities " +
+    //                 "INNER JOIN suggestion_products ON suggestion_products.id = entities.id " +
+    //                 "WHERE suggestion_products.source LIKE '%" + data.title + "%' " +
+    //                 "LIMIT " + first + "," + limit,
+    //                 (err, res) => releaseConn(conn, err, res, resolve, reject)
+    //             );
+    //         });
+    //     });
+
+    //     const parsedEntities = r.map((el) => JSON.parse(el.entity));
+    //     console.log("paginate parseEntities: ", parsedEntities);
+
+    //     return parsedEntities;
+    // };
+
     const getAllProducts = async () => {
         const r = await new Promise((resolve, reject) => {
             pool.getConnection((err, conn) => {
@@ -265,8 +335,11 @@ const orm = (pool, logger) => {
         updateTriple,
         removeTriple,
 
+        getSuggests,
         getAllProducts,
-        addSuggest
+        addSuggest,
+
+        getEntities
     };
 };
 

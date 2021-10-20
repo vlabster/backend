@@ -37,7 +37,8 @@ type Query {
     allProducts: [SuggestProduct]
     searchEntity(id: ID!): Entity
     allTriples: [Triple]
-    product(title: String!): [Product]
+    # product(title: String!): [Product]
+    searchProduct(title: String!): [Entity]
 }
 
 type SuggestProduct {

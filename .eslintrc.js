@@ -3,6 +3,7 @@ module.exports = {
         commonjs: true,
         es2021: true,
         node: true,
+        jest: true
     },
     extends: [
         "eslint:recommended",
@@ -40,7 +41,7 @@ module.exports = {
             { caseSensitive: true, natural: false, minKeys: 2 },
         ],
         eqeqeq: ["error", "smart"],
-        complexity: ["warn", { max: 2 }],
+        complexity: ["error", { max: 3 }],
         "no-magic-numbers": [
             "error",
             { ignore: [-1, 0, 1], ignoreArrayIndexes: true },
