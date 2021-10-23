@@ -55,6 +55,38 @@ const resolvers = {
                 return;
             }
         },
+        updateFolder: async (_, data, { logger, db }) => {
+            const id = uuid2id(data.id);
+            if (id === "") {
+                return;
+            }
+
+            try {
+                const r = await db.updateEntity({
+                    id: id,
+                    entity: JSON.stringify(data.input),
+                });
+
+                return true;
+            } catch (error) {
+                console.log("ERROR: ", error);
+                return;
+            }
+        },
+        removeFolder: async (_, data, { logger, db }) => {
+            const id = uuid2id(data.id);
+            if (id === "") {
+                return;
+            }
+            try {
+                const r = await db.removeEntity(id);
+
+                return true;
+            } catch (error) {
+                console.log("ERROR: ", error);
+                return;
+            }
+        },
         addVendor: async (_, { input }, { logger, db }) => {
             const id = uuid2id(input.id);
             if (id === "") {
@@ -97,6 +129,16 @@ const resolvers = {
             const foundEntities = await db.getEntities(getIDsWithX);
 
             return foundEntities;
+        },
+        getFolders: async (_, data, { db }) => {
+            const convertedUuIds = data.ids.map((id) => uuid2id(id));
+
+            const getIDsWithX = prepareQueryWhereInIDs(convertedUuIds);
+            const foundEntities = await db.getEntities(getIDsWithX);
+
+            const result = foundEntities.map((ent) => JSON.parse(ent.entity));
+
+            return result;
         },
     },
 };

@@ -33,7 +33,7 @@ const orm = (pool, logger) => {
                 }
 
                 conn.query(
-                    `SELECT HEX(id) as id, type, entity FROM entities WHERE id IN (${IDsWithX})`,
+                    `SELECT HEX(id) as id, type, entity FROM entities WHERE id IN (${IDsWithX}) AND deleted = 0`,
                     (err, res) => releaseConn(conn, err, res, resolve, reject)
                 );
             });
@@ -284,6 +284,7 @@ const orm = (pool, logger) => {
 
     return {
         getEntity,
+        getEntities,
         createEntity,
         updateEntity,
         removeEntity,
@@ -293,11 +294,10 @@ const orm = (pool, logger) => {
         updateTriple,
         removeTriple,
 
-        getSuggests,
         getAllProducts,
-        addSuggest,
 
-        getEntities
+        getSuggests,
+        addSuggest,
     };
 };
 

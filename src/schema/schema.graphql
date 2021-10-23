@@ -31,10 +31,19 @@ type Product implements Node {
     offers: [Offer]
 }
 
+type Folder {
+    id: ID!
+    title: String!
+    description: String
+}
+
 type Query {
     books: [Book]
+
     allProducts: [SuggestProduct]
     searchProduct(title: String!): [Entity]
+
+    getFolders(ids: [ID!]): [Folder]
 }
 
 type SuggestProduct {
@@ -71,6 +80,8 @@ input VendorInput {
 type Mutation {
     addProduct(input: ProductInput!): Boolean!
     addFolder(input: FolderInput!): Boolean!
+    updateFolder(id: ID!, input: FolderInput!): Boolean!
+    removeFolder(id: ID!): Boolean!
     addVendor(input: VendorInput!): Boolean!
     # updateProduct(
     #     id: ID!
