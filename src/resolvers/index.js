@@ -131,9 +131,11 @@ const resolvers = {
             return foundEntities;
         },
         getFolders: async (_, data, { db }) => {
-            const convertedUuIds = data.ids.map((id) => uuid2id(id));
+            const ids = data.ids
+                .map((uuid) => uuid2id(uuid))
+                .filter((id) => id !== "");
 
-            const getIDsWithX = prepareQueryWhereInIDs(convertedUuIds);
+            const getIDsWithX = prepareQueryWhereInIDs(ids);
             const foundEntities = await db.getEntities(getIDsWithX);
 
             const result = foundEntities.map((ent) => JSON.parse(ent.entity));
