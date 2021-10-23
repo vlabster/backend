@@ -98,7 +98,7 @@ const orm = (pool, logger) => {
             })
         );
 
-    const removeEntity = async (data) =>
+    const removeEntity = async (id) =>
         await new Promise((resolve, reject) =>
             pool.getConnection((err, conn) => {
                 if (err) {
@@ -110,7 +110,7 @@ const orm = (pool, logger) => {
 
                 conn.query(
                     "UPDATE entities SET deleted = 1, updated = NOW() WHERE id = UNHEX(?)",
-                    [data.id],
+                    [id],
                     (err, res) => releaseConn(conn, err, res, resolve, reject)
                 );
             })

@@ -9,60 +9,31 @@ const { prepareQueryWhereInIDs } = require("../helpers/prepareQuery");
 const resolvers = {
     Mutation: {
         addEntity: async (_, data, { logger, db }) => {
-            const r = await db.createEntity(data);
+            const entity = {
+                id: uuid2id(data.id),
+                type: data.type,
+                entity: JSON.stringify(data.entity)
+            };
+            const r = await db.createEntity(entity);
             //logger.info(r);
 
             return true;
         },
-        restoreEntity: async (_, thisEntity, { db }) => {
-            const res = await new Promise((resolve, reject) => {
-                db.getConnection(function(err, conn) {
-                    if (err) {
-                        reject(err);
-                        return;
-                    }
-                    conn.query(
-                        "UPDATE entities SET deleted = ? WHERE id = UNHEX(?)",
-                        [0, uuid2id(thisEntity.id)],
-                        (err, res) => {
-                            conn.release();
-                            if (err) {
-                                reject(err);
-                                return;
-                            }
+        updateEntity: async (_, data, { logger, db }) => {
+            const entity = {
+                id: data.id,
+                entity: JSON.stringify(data.entity)
+            };
+            const r = await db.updateEntity(entity);
+            //logger.info(r);
 
-                            resolve(res);
-                        }
-                    );
-                });
-            });
-            console.log("Restored Entity: ", JSON.stringify(res, null, 2));
-            return thisEntity;
+            return true;
         },
-        removeEntity: async (_, thisEntity, { db }) => {
-            const res = await new Promise((resolve, reject) => {
-                db.getConnection(function(err, conn) {
-                    if (err) {
-                        reject(err);
-                        return;
-                    }
-                    conn.query(
-                        "UPDATE entities SET deleted = ? WHERE id = UNHEX(?)",
-                        [1, uuid2id(thisEntity.id)],
-                        (err, res) => {
-                            conn.release();
-                            if (err) {
-                                reject(err);
-                                return;
-                            }
+        removeEntity: async (_, { id }, { db }) => {
+            const r = await db.removeEntity(id);
+            //logger.info(r);
 
-                            resolve(res);
-                        }
-                    );
-                });
-            });
-            console.log("Removed Entity: ", JSON.stringify(res, null, 2));
-            return thisEntity;
+            return true;
         },
         addTriple: async (_, data, { db }) => {
             const res = await db.createTriple({
@@ -151,8 +122,9 @@ const resolvers = {
         },
     },
     Query: {
-        searchEntity: async (_, data, { logger, db }) => {
+        getEntity: async (_, data, { logger, db }) => {
             const res = await db.getEntity(data);
+
             return {
                 id: res.id,
                 type: res.type,
