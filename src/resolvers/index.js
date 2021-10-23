@@ -8,26 +8,6 @@ const { prepareQueryWhereInIDs } = require("../helpers/prepareQuery");
 
 const resolvers = {
     Mutation: {
-        addTriple: async (_, data, { db }) => {
-            const res = await db.createTriple({
-                subject: uuid2id(data.subject),
-                predicate: data.predicate,
-                object: uuid2id(data.object),
-                priority: data.priority
-            });
-
-            return res;
-        },
-        updateTriple: async (_, data, { db }) => {
-            const res = await db.updateTriple(data);
-
-            return res;
-        },
-        removeTriple: async (_, data, { db }) => {
-            const res = await db.removeTriple(data);
-
-            return res;
-        },
         addProduct: async (_, { input }, { logger, db }) => {
             const id = uuid2id(input.id);
             if (id === "") {
@@ -95,11 +75,6 @@ const resolvers = {
         },
     },
     Query: {
-        allTriples: async (_, o, { db }) => {
-            const res = await db.getAllTriples();
-
-            return res;
-        },
         allProducts: async (_, o, { db }) => {
             const res = await db.getAllProducts();
 

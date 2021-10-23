@@ -33,7 +33,6 @@ type Product implements Node {
 
 type Query {
     books: [Book]
-    allTriples: [Triple]
     allProducts: [SuggestProduct]
     searchProduct(title: String!): [Entity]
 }
@@ -70,15 +69,6 @@ input VendorInput {
 }
 
 type Mutation {
-    addTriple(
-        subject: ID!
-        predicate: String!
-        object: ID!
-        priority: Int
-    ): Triple
-    updateTriple(subject: ID!, priority: Int): Triple
-    removeTriple(subject: ID!, deleted: Int): Triple
-
     addProduct(input: ProductInput!): Boolean!
     addFolder(input: FolderInput!): Boolean!
     addVendor(input: VendorInput!): Boolean!

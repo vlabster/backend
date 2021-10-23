@@ -96,26 +96,6 @@ const orm = (pool, logger) => {
             })
         );
 
-    const getAllTriples = async () => {
-        const r = await new Promise((resolve, reject) => {
-            pool.getConnection((err, conn) => {
-                if (err) {
-                    logger.error("failed getting connection", err);
-                    reject(err);
-
-                    return;
-                }
-
-                conn.query(
-                    "SELECT subject, predicate, object, priority from triples WHERE deleted = 0",
-                    (err, res) => releaseConn(conn, err, res, resolve, reject)
-                );
-            });
-        });
-
-        return r;
-    };
-
     const getTriple = async (data) => {
         const r = await new Promise((resolve, reject) => {
             pool.getConnection((err, conn) => {
@@ -308,7 +288,6 @@ const orm = (pool, logger) => {
         updateEntity,
         removeEntity,
 
-        getAllTriples,
         getTriple,
         createTriple,
         updateTriple,
