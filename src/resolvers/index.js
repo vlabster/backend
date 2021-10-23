@@ -209,6 +209,10 @@ const resolvers = {
         //     );
         // },
         searchProduct: async (_, data, { db }) => {
+            if (data.title.length < 3) {
+                return [];
+            }
+
             const foundSuggests = await db.getSuggests(data);
 
             if (!foundSuggests.length) {
