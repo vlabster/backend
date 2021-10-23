@@ -8,33 +8,6 @@ const { prepareQueryWhereInIDs } = require("../helpers/prepareQuery");
 
 const resolvers = {
     Mutation: {
-        addEntity: async (_, data, { logger, db }) => {
-            const entity = {
-                id: uuid2id(data.id),
-                type: data.type,
-                entity: JSON.stringify(data.entity)
-            };
-            const r = await db.createEntity(entity);
-            //logger.info(r);
-
-            return true;
-        },
-        updateEntity: async (_, data, { logger, db }) => {
-            const entity = {
-                id: data.id,
-                entity: JSON.stringify(data.entity)
-            };
-            const r = await db.updateEntity(entity);
-            //logger.info(r);
-
-            return true;
-        },
-        removeEntity: async (_, { id }, { db }) => {
-            const r = await db.removeEntity(id);
-            //logger.info(r);
-
-            return true;
-        },
         addTriple: async (_, data, { db }) => {
             const res = await db.createTriple({
                 subject: uuid2id(data.subject),
@@ -122,23 +95,6 @@ const resolvers = {
         },
     },
     Query: {
-        getEntity: async (_, data, { logger, db }) => {
-            const res = await db.getEntity(data);
-
-            return {
-                id: res.id,
-                type: res.type,
-                entity: res.entity,
-                created: "a",
-                updated: "a",
-                deleted: 0,
-            };
-        },
-        allEntities: async (_, o, { db }) => {
-            const res = await db.getAllEntities();
-
-            return res;
-        },
         allTriples: async (_, o, { db }) => {
             const res = await db.getAllTriples();
 
