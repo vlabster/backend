@@ -1,26 +1,6 @@
 //const { id2uuid, uuid2id } = require('./helpers/convertUuid');
 
 const orm = (pool, logger) => {
-    const getAllEntities = async () => {
-        const r = await new Promise((resolve, reject) => {
-            pool.getConnection((err, conn) => {
-                if (err) {
-                    logger.error("failed getting connection", err);
-                    reject(err);
-
-                    return;
-                }
-
-                conn.query(
-                    "SELECT id, type, entity, created, updated, deleted from entities",
-                    (err, res) => releaseConn(conn, err, res, resolve, reject)
-                );
-            });
-        });
-
-        return r;
-    };
-
     const getEntity = async (data) => {
         const r = await new Promise((resolve, reject) => {
             pool.getConnection((err, conn) => {
@@ -98,7 +78,7 @@ const orm = (pool, logger) => {
             })
         );
 
-    const removeEntity = async (data) =>
+    const removeEntity = async (id) =>
         await new Promise((resolve, reject) =>
             pool.getConnection((err, conn) => {
                 if (err) {
@@ -110,7 +90,7 @@ const orm = (pool, logger) => {
 
                 conn.query(
                     "UPDATE entities SET deleted = 1, updated = NOW() WHERE id = UNHEX(?)",
-                    [data.id],
+                    [id],
                     (err, res) => releaseConn(conn, err, res, resolve, reject)
                 );
             })

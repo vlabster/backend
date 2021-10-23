@@ -33,11 +33,8 @@ type Product implements Node {
 
 type Query {
     books: [Book]
-    allEntities: [Entity]
-    allProducts: [SuggestProduct]
-    searchEntity(id: ID!): Entity
     allTriples: [Triple]
-    # product(title: String!): [Product]
+    allProducts: [SuggestProduct]
     searchProduct(title: String!): [Entity]
 }
 
@@ -82,7 +79,6 @@ type Mutation {
     updateTriple(subject: ID!, priority: Int): Triple
     removeTriple(subject: ID!, deleted: Int): Triple
 
-    addEntity(id: ID!, type: String!, entity: String!): Boolean!
     addProduct(input: ProductInput!): Boolean!
     addFolder(input: FolderInput!): Boolean!
     addVendor(input: VendorInput!): Boolean!
@@ -94,8 +90,6 @@ type Mutation {
     #     price: String
     # ): Product!
     # will be restored while working with products
-    removeEntity(id: ID!): Entity
-    restoreEntity(id: ID!): Entity
 }
 
 type Vendor implements Node {
