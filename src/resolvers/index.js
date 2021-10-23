@@ -5,28 +5,6 @@ const {
 const { id2uuid, uuid2id } = require("../helpers/convertUuid");
 const { prepareQueryWhereInIDs } = require("../helpers/prepareQuery");
 
-const products = [
-    {
-        id: "1",
-        title: "Капецитабин",
-        price: "от 150р.",
-    },
-    {
-        id: "2",
-        title: "Пенталгин",
-        price: "от 200р.",
-    },
-    {
-        id: "3",
-        title: "Пендимин",
-        price: "от 450р.",
-    },
-    {
-        id: "4",
-        title: "Пендаль",
-        price: "от 700р.",
-    },
-];
 
 const resolvers = {
     Mutation: {
@@ -199,15 +177,6 @@ const resolvers = {
 
             return res;
         },
-        // product(parent, args, context, info) {
-        //     return products.filter(
-        //         (product) =>
-        //             args.title.length > 2 &&
-        //             product.title
-        //                 .toLowerCase()
-        //                 .indexOf(args.title.toLowerCase()) > -1
-        //     );
-        // },
         searchProduct: async (_, data, { db }) => {
             if (data.title.length < 3) {
                 return [];
