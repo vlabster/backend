@@ -303,7 +303,6 @@ const orm = (pool, logger) => {
     };
 
     return {
-        getAllEntities,
         getEntity,
         createEntity,
         updateEntity,
