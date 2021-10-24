@@ -41,10 +41,10 @@ type Query {
     books: [Book]
 
     allProducts: [SuggestProduct]
-    getProducts(uuIds: [ID!]): [Product]
+    getProducts(uuIds: [ID]!): [Product]
     searchProduct(title: String!): [Product]
 
-    getFolders(ids: [ID!]): [Folder]
+    getFolders(uuIds: [ID]!): [Folder]
 }
 
 type SuggestProduct {

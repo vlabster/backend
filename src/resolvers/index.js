@@ -11,7 +11,7 @@ const resolvers = {
         addProduct: async (_, { input }, { logger, db }) => {
             const id = uuid2id(input.id);
             if (id === "") {
-                return;
+                return new Error("uuid is invalid");
             }
 
             try {
@@ -39,7 +39,7 @@ const resolvers = {
         updateProduct: async (_, data, { logger, db }) => {
             const id = uuid2id(data.id);
             if (id === "") {
-                return;
+                return new Error("uuid is invalid");
             }
 
             try {
@@ -57,7 +57,7 @@ const resolvers = {
         removeProduct: async (_, data, { logger, db }) => {
             const id = uuid2id(data.id);
             if (id === "") {
-                return;
+                return new Error("uuid is invalid");
             }
 
             try {
@@ -73,7 +73,7 @@ const resolvers = {
         addFolder: async (_, { input }, { logger, db }) => {
             const id = uuid2id(input.id);
             if (id === "") {
-                return;
+                return new Error("uuid is invalid");
             }
 
             try {
@@ -92,7 +92,7 @@ const resolvers = {
         updateFolder: async (_, data, { logger, db }) => {
             const id = uuid2id(data.id);
             if (id === "") {
-                return;
+                return new Error("uuid is invalid");
             }
 
             try {
@@ -110,7 +110,7 @@ const resolvers = {
         removeFolder: async (_, data, { logger, db }) => {
             const id = uuid2id(data.id);
             if (id === "") {
-                return;
+                return new Error("uuid is invalid");
             }
             try {
                 const r = await db.removeEntity(id);
@@ -125,7 +125,7 @@ const resolvers = {
         addVendor: async (_, { input }, { logger, db }) => {
             const id = uuid2id(input.id);
             if (id === "") {
-                return;
+                return new Error("uuid is invalid");
             }
             try {
                 const r = await db.createEntity({
@@ -151,6 +151,10 @@ const resolvers = {
             const ids = data.uuIds
                 .map((uuid) => uuid2id(uuid))
                 .filter((id) => id !== "");
+
+            if (!ids.length) {
+                return [];
+            }
 
             const getIDsWithX = prepareQueryWhereInIDs(ids);
             const foundEntities = await db.getEntities(getIDsWithX);
@@ -180,9 +184,13 @@ const resolvers = {
             return result;
         },
         getFolders: async (_, data, { db }) => {
-            const ids = data.ids
+            const ids = data.uuIds
                 .map((uuid) => uuid2id(uuid))
                 .filter((id) => id !== "");
+
+            if (!ids.length) {
+                return [];
+            }
 
             const getIDsWithX = prepareQueryWhereInIDs(ids);
             const foundEntities = await db.getEntities(getIDsWithX);
