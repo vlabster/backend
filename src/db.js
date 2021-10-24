@@ -157,7 +157,7 @@ const orm = (pool, logger) => {
             })
         );
 
-    const removeTriple = async (data) =>
+    const removeTriple = async (subject) =>
         await new Promise((resolve, reject) =>
             pool.getConnection((err, conn) => {
                 if (err) {
@@ -169,7 +169,7 @@ const orm = (pool, logger) => {
 
                 conn.query(
                     "UPDATE triples SET deleted = 1 WHERE subject = UNHEX(?)",
-                    [data.subject],
+                    [subject],
                     (err, res) => releaseConn(conn, err, res, resolve, reject)
                 );
             })

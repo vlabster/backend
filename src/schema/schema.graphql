@@ -78,10 +78,20 @@ input VendorInput {
     title: String!
 }
 
+input TripleInput {
+    subject: ID!
+    predicate: String!
+    object: ID!
+    priority: Int
+}
+
 type Mutation {
     addProduct(input: ProductInput!): Boolean!
     updateProduct(id: ID!, input: ProductInput!): Boolean!
     removeProduct(id: ID!): Boolean!
+
+    addProductInFolder(input: TripleInput!): Boolean!
+    removeProductFromFolder(subject: ID!): Boolean!
 
     addFolder(input: FolderInput!): Boolean!
     updateFolder(id: ID!, input: FolderInput!): Boolean!

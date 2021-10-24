@@ -69,6 +69,43 @@ const resolvers = {
                 return;
             }
         },
+        addProductInFolder: async (_, { input }, { logger, db }) => {
+            const subject = uuid2id(input.subject);
+            const object = uuid2id(input.object);
+
+            // if (subject === "" || object === "") {
+            //     return new Error("uuid is invalid");
+            // }
+
+            try {
+                const rTriple = await db.createTriple({
+                    subject: subject,
+                    predicate: input.predicate,
+                    object: object,
+                    priority: input.priority
+                });
+
+                return true;
+            } catch (error) {
+                console.log("ERROR: ", error);
+                return;
+            }
+        },
+        removeProductFromFolder: async (_, data, { logger, db }) => {
+            const subject = uuid2id(data.subject);
+            if (subject === "") {
+                return new Error("uuid is invalid");
+            }
+
+            try {
+                const r = await db.removeTriple(subject);
+
+                return true;
+            } catch (error) {
+                console.log("ERROR: ", error);
+                return;
+            }
+        },
 
         addFolder: async (_, { input }, { logger, db }) => {
             const id = uuid2id(input.id);
