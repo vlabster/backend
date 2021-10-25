@@ -40,7 +40,7 @@ type Folder {
 type Query {
     books: [Book]
 
-    allProducts: [SuggestProduct]
+    getAllSuggests: [SuggestProduct]
     getProducts(uuIds: [ID]!): [Product]
     searchProduct(title: String!): [Product]
 

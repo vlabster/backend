@@ -196,7 +196,7 @@ const orm = (pool, logger) => {
         return r;
     };
 
-    const getAllProducts = async () => {
+    const getAllSuggests = async () => {
         const r = await new Promise((resolve, reject) => {
             pool.getConnection((err, conn) => {
                 if (err) {
@@ -263,8 +263,7 @@ const orm = (pool, logger) => {
         updateTriple,
         removeTriple,
 
-        getAllProducts,
-
+        getAllSuggests,
         getSuggests,
         addSuggest,
     };

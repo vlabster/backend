@@ -179,8 +179,8 @@ const resolvers = {
         },
     },
     Query: {
-        allProducts: async (_, o, { db }) => {
-            const res = await db.getAllProducts();
+        getAllSuggests: async (_, o, { db }) => {
+            const res = await db.getAllSuggests();
 
             return res;
         },
