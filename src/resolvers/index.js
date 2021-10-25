@@ -69,7 +69,7 @@ const resolvers = {
                 return;
             }
         },
-        addProductInFolder: async (_, { input }, { logger, db }) => {
+        moveToFolder: async (_, { input }, { logger, db }) => {
             const subject = uuid2id(input.subject);
             const object = uuid2id(input.object);
 
@@ -91,14 +91,15 @@ const resolvers = {
                 return;
             }
         },
-        removeProductFromFolder: async (_, data, { logger, db }) => {
+        removeFromFolder: async (_, data, { logger, db }) => {
             const subject = uuid2id(data.subject);
+            const object = uuid2id(data.object);
             if (subject === "") {
                 return new Error("uuid is invalid");
             }
 
             try {
-                const r = await db.removeTriple(subject);
+                const r = await db.removeTriple(subject, object);
 
                 return true;
             } catch (error) {

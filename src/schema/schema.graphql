@@ -78,7 +78,7 @@ input VendorInput {
     title: String!
 }
 
-input TripleInput {
+input moveToFolderInput {
     subject: ID!
     predicate: String!
     object: ID!
@@ -90,8 +90,8 @@ type Mutation {
     updateProduct(id: ID!, input: ProductInput!): Boolean!
     removeProduct(id: ID!): Boolean!
 
-    addProductInFolder(input: TripleInput!): Boolean!
-    removeProductFromFolder(subject: ID!): Boolean!
+    moveToFolder(input: moveToFolderInput!): Boolean!
+    removeFromFolder(subject: ID!, object: ID!): Boolean!
 
     addFolder(input: FolderInput!): Boolean!
     updateFolder(id: ID!, input: FolderInput!): Boolean!

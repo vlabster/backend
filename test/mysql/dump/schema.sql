@@ -21,7 +21,7 @@ CREATE TABLE triples (
     `object` binary(16) NOT NULL COMMENT 'UUID объекта',
     `priority` int NOT NULL DEFAULT '1' COMMENT 'Номер приоритета',
     `deleted` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Флаг удаления',
-    PRIMARY KEY (`subject`)
+    PRIMARY KEY (`subject`, `predicate`, `object`)
 );
 
 CREATE TABLE suggestion_products (
