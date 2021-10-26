@@ -175,6 +175,29 @@ const orm = (pool, logger) => {
             })
         );
 
+    const getFromFolder = async (data) => {
+        const r = await new Promise((resolve, reject) => {
+            pool.getConnection((err, conn) => {
+                if (err) {
+                    logger.error("failed getting connection", err);
+                    reject(err);
+
+                    return;
+                }
+
+                conn.query(
+                    "SELECT HEX(object) as object FROM triples " +
+                    "WHERE subject = UNHEX(?) AND deleted = 0 AND predicate = ? " +
+                    "ORDER BY id",
+                    [data.subject, data.predicate],
+                    (err, res) => releaseConn(conn, err, res, resolve, reject)
+                );
+            });
+        });
+
+        return r;
+    };
+
     const getSuggests = async (data) => {
         const r = await new Promise((resolve, reject) => {
             pool.getConnection((err, conn) => {
@@ -262,6 +285,8 @@ const orm = (pool, logger) => {
         createTriple,
         updateTriple,
         removeTriple,
+
+        getFromFolder,
 
         getAllSuggests,
         getSuggests,

@@ -69,6 +69,7 @@ const resolvers = {
                 return;
             }
         },
+
         moveToFolder: async (_, { input }, { logger, db }) => {
             const subject = uuid2id(input.subject);
             const object = uuid2id(input.object);
@@ -236,6 +237,21 @@ const resolvers = {
             const result = foundEntities.map((ent) => JSON.parse(ent.entity));
 
             return result;
+        },
+        getFromFolder: async (_, data, { logger, db }) => {
+            const subject = uuid2id(data.subject);
+            if (subject === "") {
+                return new Error("uuid is invalid");
+            }
+
+            try {
+                const folder = await db.getFromFolder({subject, predicate: data.predicate});
+
+                return folder.map(fldr => fldr.object);
+            } catch (error) {
+                console.log("ERROR: ", error);
+                return;
+            }
         },
     },
 };
