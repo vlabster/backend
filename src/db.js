@@ -1,4 +1,3 @@
-//const { id2uuid, uuid2id } = require('./helpers/convertUuid');
 
 const orm = (pool, logger) => {
     const getEntity = async (data) => {
@@ -158,7 +157,7 @@ const orm = (pool, logger) => {
             })
         );
 
-    const removeTriple = async (data) =>
+    const removeTriple = async (subject, object) =>
         await new Promise((resolve, reject) =>
             pool.getConnection((err, conn) => {
                 if (err) {
@@ -169,8 +168,8 @@ const orm = (pool, logger) => {
                 }
 
                 conn.query(
-                    "UPDATE triples SET deleted = 1 WHERE subject = UNHEX(?)",
-                    [data.subject],
+                    "UPDATE triples SET deleted = 1 WHERE subject = UNHEX(?) AND object = UNHEX(?)",
+                    [subject, object],
                     (err, res) => releaseConn(conn, err, res, resolve, reject)
                 );
             })
@@ -197,37 +196,7 @@ const orm = (pool, logger) => {
         return r;
     };
 
-    // const getPaginatedProducts = async (data) => {
-    //     const page = 1;
-    //     const limit = 2;
-    //     const first = (page - 1) * page;
-
-    //     const r = await new Promise((resolve, reject) => {
-    //         pool.getConnection((err, conn) => {
-    //             if (err) {
-    //                 logger.error("failed getting connection", err);
-    //                 reject(err);
-
-    //                 return;
-    //             }
-
-    //             conn.query(
-    //                 "SELECT entities.entity FROM entities " +
-    //                 "INNER JOIN suggestion_products ON suggestion_products.id = entities.id " +
-    //                 "WHERE suggestion_products.source LIKE '%" + data.title + "%' " +
-    //                 "LIMIT " + first + "," + limit,
-    //                 (err, res) => releaseConn(conn, err, res, resolve, reject)
-    //             );
-    //         });
-    //     });
-
-    //     const parsedEntities = r.map((el) => JSON.parse(el.entity));
-    //     console.log("paginate parseEntities: ", parsedEntities);
-
-    //     return parsedEntities;
-    // };
-
-    const getAllProducts = async () => {
+    const getAllSuggests = async () => {
         const r = await new Promise((resolve, reject) => {
             pool.getConnection((err, conn) => {
                 if (err) {
@@ -294,8 +263,7 @@ const orm = (pool, logger) => {
         updateTriple,
         removeTriple,
 
-        getAllProducts,
-
+        getAllSuggests,
         getSuggests,
         addSuggest,
     };

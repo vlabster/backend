@@ -11,7 +11,7 @@ const resolvers = {
         addProduct: async (_, { input }, { logger, db }) => {
             const id = uuid2id(input.id);
             if (id === "") {
-                return;
+                return new Error("uuid is invalid");
             }
 
             try {
@@ -36,10 +36,82 @@ const resolvers = {
                 return;
             }
         },
+        updateProduct: async (_, data, { logger, db }) => {
+            const id = uuid2id(data.id);
+            if (id === "") {
+                return new Error("uuid is invalid");
+            }
+
+            try {
+                const r = await db.updateEntity({
+                    id: id,
+                    entity: JSON.stringify(data.input),
+                });
+
+                return true;
+            } catch (error) {
+                console.log("ERROR: ", error);
+                return;
+            }
+        },
+        removeProduct: async (_, data, { logger, db }) => {
+            const id = uuid2id(data.id);
+            if (id === "") {
+                return new Error("uuid is invalid");
+            }
+
+            try {
+                const r = await db.removeEntity(id);
+
+                return true;
+            } catch (error) {
+                console.log("ERROR: ", error);
+                return;
+            }
+        },
+        moveToFolder: async (_, { input }, { logger, db }) => {
+            const subject = uuid2id(input.subject);
+            const object = uuid2id(input.object);
+
+            // if (subject === "" || object === "") {
+            //     return new Error("uuid is invalid");
+            // }
+
+            try {
+                const rTriple = await db.createTriple({
+                    subject: subject,
+                    predicate: input.predicate,
+                    object: object,
+                    priority: input.priority
+                });
+
+                return true;
+            } catch (error) {
+                console.log("ERROR: ", error);
+                return;
+            }
+        },
+        removeFromFolder: async (_, data, { logger, db }) => {
+            const subject = uuid2id(data.subject);
+            const object = uuid2id(data.object);
+            if (subject === "") {
+                return new Error("uuid is invalid");
+            }
+
+            try {
+                const r = await db.removeTriple(subject, object);
+
+                return true;
+            } catch (error) {
+                console.log("ERROR: ", error);
+                return;
+            }
+        },
+
         addFolder: async (_, { input }, { logger, db }) => {
             const id = uuid2id(input.id);
             if (id === "") {
-                return;
+                return new Error("uuid is invalid");
             }
 
             try {
@@ -58,7 +130,7 @@ const resolvers = {
         updateFolder: async (_, data, { logger, db }) => {
             const id = uuid2id(data.id);
             if (id === "") {
-                return;
+                return new Error("uuid is invalid");
             }
 
             try {
@@ -76,7 +148,7 @@ const resolvers = {
         removeFolder: async (_, data, { logger, db }) => {
             const id = uuid2id(data.id);
             if (id === "") {
-                return;
+                return new Error("uuid is invalid");
             }
             try {
                 const r = await db.removeEntity(id);
@@ -87,10 +159,11 @@ const resolvers = {
                 return;
             }
         },
+
         addVendor: async (_, { input }, { logger, db }) => {
             const id = uuid2id(input.id);
             if (id === "") {
-                return;
+                return new Error("uuid is invalid");
             }
             try {
                 const r = await db.createEntity({
@@ -107,10 +180,26 @@ const resolvers = {
         },
     },
     Query: {
-        allProducts: async (_, o, { db }) => {
-            const res = await db.getAllProducts();
+        getAllSuggests: async (_, o, { db }) => {
+            const res = await db.getAllSuggests();
 
             return res;
+        },
+        getProducts: async (_, data, { db }) => {
+            const ids = data.uuIds
+                .map((uuid) => uuid2id(uuid))
+                .filter((id) => id !== "");
+
+            if (!ids.length) {
+                return [];
+            }
+
+            const getIDsWithX = prepareQueryWhereInIDs(ids);
+            const foundEntities = await db.getEntities(getIDsWithX);
+
+            const result = foundEntities.map((ent) => JSON.parse(ent.entity));
+
+            return result;
         },
         searchProduct: async (_, data, { db }) => {
             if (data.title.length < 3) {
@@ -128,12 +217,18 @@ const resolvers = {
             const getIDsWithX = prepareQueryWhereInIDs(suggestIds);
             const foundEntities = await db.getEntities(getIDsWithX);
 
-            return foundEntities;
+            const result = foundEntities.map((ent) => JSON.parse(ent.entity));
+
+            return result;
         },
         getFolders: async (_, data, { db }) => {
-            const ids = data.ids
+            const ids = data.uuIds
                 .map((uuid) => uuid2id(uuid))
                 .filter((id) => id !== "");
+
+            if (!ids.length) {
+                return [];
+            }
 
             const getIDsWithX = prepareQueryWhereInIDs(ids);
             const foundEntities = await db.getEntities(getIDsWithX);

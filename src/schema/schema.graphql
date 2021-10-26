@@ -40,10 +40,11 @@ type Folder {
 type Query {
     books: [Book]
 
-    allProducts: [SuggestProduct]
-    searchProduct(title: String!): [Entity]
+    getAllSuggests: [SuggestProduct]
+    getProducts(uuIds: [ID]!): [Product]
+    searchProduct(title: String!): [Product]
 
-    getFolders(ids: [ID!]): [Folder]
+    getFolders(uuIds: [ID]!): [Folder]
 }
 
 type SuggestProduct {
@@ -77,11 +78,25 @@ input VendorInput {
     title: String!
 }
 
+input moveToFolderInput {
+    subject: ID!
+    predicate: String!
+    object: ID!
+    priority: Int
+}
+
 type Mutation {
     addProduct(input: ProductInput!): Boolean!
+    updateProduct(id: ID!, input: ProductInput!): Boolean!
+    removeProduct(id: ID!): Boolean!
+
+    moveToFolder(input: moveToFolderInput!): Boolean!
+    removeFromFolder(subject: ID!, object: ID!): Boolean!
+
     addFolder(input: FolderInput!): Boolean!
     updateFolder(id: ID!, input: FolderInput!): Boolean!
     removeFolder(id: ID!): Boolean!
+
     addVendor(input: VendorInput!): Boolean!
     # updateProduct(
     #     id: ID!
