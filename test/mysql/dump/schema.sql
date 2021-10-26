@@ -16,13 +16,13 @@ CREATE TABLE entities (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 CREATE TABLE triples (
-    `id` int PRIMARY KEY AUTO_INCREMENT,
+    `id` bigint(20) PRIMARY KEY AUTO_INCREMENT,
     `subject` binary(16) NOT NULL COMMENT 'UUID товара',
     `predicate` varchar(255) NOT NULL COMMENT 'Отношение субьекта к объекту',
     `object` binary(16) NOT NULL COMMENT 'UUID объекта',
     `priority` int NOT NULL DEFAULT '1' COMMENT 'Номер приоритета',
     `deleted` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Флаг удаления',
-    KEY (`subject`, `predicate`, `object`, `deleted`)
+    KEY (`subject`, `predicate`, `deleted`)
 );
 
 CREATE TABLE suggestion_products (
