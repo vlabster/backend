@@ -44,6 +44,7 @@ type Query {
     getProducts(uuIds: [ID]!): [Product]
     searchProduct(title: String!): [Product]
 
+    getFromFolder(subject: ID!, predicate: String!): [ID]
     getFolders(uuIds: [ID]!): [Folder]
 }
 

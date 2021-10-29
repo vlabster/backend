@@ -32,7 +32,7 @@ const resolvers = {
 
                 return true;
             } catch (error) {
-                console.log("ERROR: ", error);
+                logger.error("failed to add product", error);
                 return;
             }
         },
@@ -50,7 +50,7 @@ const resolvers = {
 
                 return true;
             } catch (error) {
-                console.log("ERROR: ", error);
+                logger.error("failed to update product", error);
                 return;
             }
         },
@@ -65,10 +65,11 @@ const resolvers = {
 
                 return true;
             } catch (error) {
-                console.log("ERROR: ", error);
+                logger.error("failed to remove product", error);
                 return;
             }
         },
+
         moveToFolder: async (_, { input }, { logger, db }) => {
             const subject = uuid2id(input.subject);
             const object = uuid2id(input.object);
@@ -87,7 +88,7 @@ const resolvers = {
 
                 return true;
             } catch (error) {
-                console.log("ERROR: ", error);
+                logger.error("failed to move to folder", error);
                 return;
             }
         },
@@ -103,7 +104,7 @@ const resolvers = {
 
                 return true;
             } catch (error) {
-                console.log("ERROR: ", error);
+                logger.error("failed to remove from folder", error);
                 return;
             }
         },
@@ -123,7 +124,7 @@ const resolvers = {
 
                 return true;
             } catch (error) {
-                console.log("ERROR: ", error);
+                logger.error("failed to add folder", error);
                 return;
             }
         },
@@ -141,7 +142,7 @@ const resolvers = {
 
                 return true;
             } catch (error) {
-                console.log("ERROR: ", error);
+                logger.error("failed to update folder", error);
                 return;
             }
         },
@@ -155,7 +156,7 @@ const resolvers = {
 
                 return true;
             } catch (error) {
-                console.log("ERROR: ", error);
+                logger.error("failed to remove folder", error);
                 return;
             }
         },
@@ -174,18 +175,24 @@ const resolvers = {
 
                 return true;
             } catch (error) {
-                console.log("ERROR: ", error);
+                logger.error("failed to add vendor", error);
                 return;
             }
         },
     },
     Query: {
-        getAllSuggests: async (_, o, { db }) => {
-            const res = await db.getAllSuggests();
+        getAllSuggests: async (_, o, { logger, db }) => {
+            try {
+                const res = await db.getAllSuggests();
 
-            return res;
+                return res;
+            } catch (error) {
+                logger.error("failed to get all suggests", error);
+                return;
+            }
+
         },
-        getProducts: async (_, data, { db }) => {
+        getProducts: async (_, data, { logger, db }) => {
             const ids = data.uuIds
                 .map((uuid) => uuid2id(uuid))
                 .filter((id) => id !== "");
@@ -194,34 +201,42 @@ const resolvers = {
                 return [];
             }
 
-            const getIDsWithX = prepareQueryWhereInIDs(ids);
-            const foundEntities = await db.getEntities(getIDsWithX);
+            try {
+                const getIDsWithX = prepareQueryWhereInIDs(ids);
+                const foundEntities = await db.getEntities(getIDsWithX);
 
-            const result = foundEntities.map((ent) => JSON.parse(ent.entity));
-
-            return result;
+                const result = foundEntities.map((ent) => JSON.parse(ent.entity));
+                return result;
+            } catch (error) {
+                logger.error("failed to get products", error);
+                return;
+            }
         },
-        searchProduct: async (_, data, { db }) => {
+        // eslint-disable-next-line complexity
+        searchProduct: async (_, data, { logger, db }) => {
             if (data.title.length < 3) {
                 return [];
             }
 
-            const foundSuggests = await db.getSuggests(data);
+            try {
+                const foundSuggests = await db.getSuggests(data);
 
-            if (!foundSuggests.length) {
-                return [];
+                if (!foundSuggests.length) {
+                    return [];
+                }
+
+                const suggestIds = foundSuggests.map((entity) => entity.id);
+                const getIDsWithX = prepareQueryWhereInIDs(suggestIds);
+                const foundEntities = await db.getEntities(getIDsWithX);
+
+                const result = foundEntities.map((ent) => JSON.parse(ent.entity));
+                return result;
+            } catch (error) {
+                logger.error("failed to search product", error);
+                return;
             }
-
-            const suggestIds = foundSuggests.map((entity) => entity.id);
-
-            const getIDsWithX = prepareQueryWhereInIDs(suggestIds);
-            const foundEntities = await db.getEntities(getIDsWithX);
-
-            const result = foundEntities.map((ent) => JSON.parse(ent.entity));
-
-            return result;
         },
-        getFolders: async (_, data, { db }) => {
+        getFolders: async (_, data, { logger, db }) => {
             const ids = data.uuIds
                 .map((uuid) => uuid2id(uuid))
                 .filter((id) => id !== "");
@@ -230,12 +245,31 @@ const resolvers = {
                 return [];
             }
 
-            const getIDsWithX = prepareQueryWhereInIDs(ids);
-            const foundEntities = await db.getEntities(getIDsWithX);
+            try {
+                const getIDsWithX = prepareQueryWhereInIDs(ids);
+                const foundEntities = await db.getEntities(getIDsWithX);
 
-            const result = foundEntities.map((ent) => JSON.parse(ent.entity));
+                const result = foundEntities.map((ent) => JSON.parse(ent.entity));
+                return result;
+            } catch (error) {
+                logger.error("failed to get folders", error);
+                return;
+            }
+        },
+        getFromFolder: async (_, data, { logger, db }) => {
+            const subject = uuid2id(data.subject);
+            if (subject === "") {
+                return new Error("uuid is invalid");
+            }
 
-            return result;
+            try {
+                const folder = await db.getEdge({subject, predicate: data.predicate});
+
+                return folder.map(fldr => fldr.object);
+            } catch (error) {
+                logger.error("failed to get from folder", error);
+                return;
+            }
         },
     },
 };
