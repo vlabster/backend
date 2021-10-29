@@ -32,7 +32,7 @@ const resolvers = {
 
                 return true;
             } catch (error) {
-                console.log("ERROR: ", error);
+                logger.error("Error in addProduct", error);
                 return;
             }
         },
@@ -50,7 +50,7 @@ const resolvers = {
 
                 return true;
             } catch (error) {
-                console.log("ERROR: ", error);
+                logger.error("Error in updateProduct", error);
                 return;
             }
         },
@@ -65,7 +65,7 @@ const resolvers = {
 
                 return true;
             } catch (error) {
-                console.log("ERROR: ", error);
+                logger.error("Error in removeProduct", error);
                 return;
             }
         },
@@ -88,7 +88,7 @@ const resolvers = {
 
                 return true;
             } catch (error) {
-                console.log("ERROR: ", error);
+                logger.error("Error in  moveToFolder", error);
                 return;
             }
         },
@@ -104,7 +104,7 @@ const resolvers = {
 
                 return true;
             } catch (error) {
-                console.log("ERROR: ", error);
+                logger.error("Error in removeFromFolder", error);
                 return;
             }
         },
@@ -124,7 +124,7 @@ const resolvers = {
 
                 return true;
             } catch (error) {
-                console.log("ERROR: ", error);
+                logger.error("Error in addFolder", error);
                 return;
             }
         },
@@ -142,7 +142,7 @@ const resolvers = {
 
                 return true;
             } catch (error) {
-                console.log("ERROR: ", error);
+                logger.error("Error in updateFolder", error);
                 return;
             }
         },
@@ -156,7 +156,7 @@ const resolvers = {
 
                 return true;
             } catch (error) {
-                console.log("ERROR: ", error);
+                logger.error("Error in removeFolder", error);
                 return;
             }
         },
@@ -175,18 +175,24 @@ const resolvers = {
 
                 return true;
             } catch (error) {
-                console.log("ERROR: ", error);
+                logger.error("Error in addVendor", error);
                 return;
             }
         },
     },
     Query: {
-        getAllSuggests: async (_, o, { db }) => {
-            const res = await db.getAllSuggests();
+        getAllSuggests: async (_, o, { logger, db }) => {
+            try {
+                const res = await db.getAllSuggests();
 
-            return res;
+                return res;
+            } catch (error) {
+                logger.error("Error in getAllSuggests", error);
+                return;
+            }
+
         },
-        getProducts: async (_, data, { db }) => {
+        getProducts: async (_, data, { logger, db }) => {
             const ids = data.uuIds
                 .map((uuid) => uuid2id(uuid))
                 .filter((id) => id !== "");
@@ -195,34 +201,42 @@ const resolvers = {
                 return [];
             }
 
-            const getIDsWithX = prepareQueryWhereInIDs(ids);
-            const foundEntities = await db.getEntities(getIDsWithX);
+            try {
+                const getIDsWithX = prepareQueryWhereInIDs(ids);
+                const foundEntities = await db.getEntities(getIDsWithX);
 
-            const result = foundEntities.map((ent) => JSON.parse(ent.entity));
-
-            return result;
+                const result = foundEntities.map((ent) => JSON.parse(ent.entity));
+                return result;
+            } catch (error) {
+                logger.error("Error in getProducts: ", error);
+                return;
+            }
         },
-        searchProduct: async (_, data, { db }) => {
+        // eslint-disable-next-line complexity
+        searchProduct: async (_, data, { logger, db }) => {
             if (data.title.length < 3) {
                 return [];
             }
 
-            const foundSuggests = await db.getSuggests(data);
+            try {
+                const foundSuggests = await db.getSuggests(data);
 
-            if (!foundSuggests.length) {
-                return [];
+                if (!foundSuggests.length) {
+                    return [];
+                }
+
+                const suggestIds = foundSuggests.map((entity) => entity.id);
+                const getIDsWithX = prepareQueryWhereInIDs(suggestIds);
+                const foundEntities = await db.getEntities(getIDsWithX);
+
+                const result = foundEntities.map((ent) => JSON.parse(ent.entity));
+                return result;
+            } catch (error) {
+                logger.error("Error in searchProduct: ", error);
+                return;
             }
-
-            const suggestIds = foundSuggests.map((entity) => entity.id);
-
-            const getIDsWithX = prepareQueryWhereInIDs(suggestIds);
-            const foundEntities = await db.getEntities(getIDsWithX);
-
-            const result = foundEntities.map((ent) => JSON.parse(ent.entity));
-
-            return result;
         },
-        getFolders: async (_, data, { db }) => {
+        getFolders: async (_, data, { logger, db }) => {
             const ids = data.uuIds
                 .map((uuid) => uuid2id(uuid))
                 .filter((id) => id !== "");
@@ -231,12 +245,16 @@ const resolvers = {
                 return [];
             }
 
-            const getIDsWithX = prepareQueryWhereInIDs(ids);
-            const foundEntities = await db.getEntities(getIDsWithX);
+            try {
+                const getIDsWithX = prepareQueryWhereInIDs(ids);
+                const foundEntities = await db.getEntities(getIDsWithX);
 
-            const result = foundEntities.map((ent) => JSON.parse(ent.entity));
-
-            return result;
+                const result = foundEntities.map((ent) => JSON.parse(ent.entity));
+                return result;
+            } catch (error) {
+                logger.error("Error in getFolders: ", error);
+                return;
+            }
         },
         getFromFolder: async (_, data, { logger, db }) => {
             const subject = uuid2id(data.subject);
@@ -249,7 +267,7 @@ const resolvers = {
 
                 return folder.map(fldr => fldr.object);
             } catch (error) {
-                console.log("ERROR: ", error);
+                logger.error("Error in getFromFolder: ", error);
                 return;
             }
         },
