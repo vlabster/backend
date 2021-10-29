@@ -175,7 +175,7 @@ const orm = (pool, logger) => {
             })
         );
 
-    const getFromFolder = async (data) => {
+    const getEdge = async (data) => {
         const r = await new Promise((resolve, reject) => {
             pool.getConnection((err, conn) => {
                 if (err) {
@@ -286,7 +286,7 @@ const orm = (pool, logger) => {
         updateTriple,
         removeTriple,
 
-        getFromFolder,
+        getEdge,
 
         getAllSuggests,
         getSuggests,

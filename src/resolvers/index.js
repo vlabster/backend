@@ -245,7 +245,7 @@ const resolvers = {
             }
 
             try {
-                const folder = await db.getFromFolder({subject, predicate: data.predicate});
+                const folder = await db.getEdge({subject, predicate: data.predicate});
 
                 return folder.map(fldr => fldr.object);
             } catch (error) {
