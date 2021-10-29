@@ -125,7 +125,7 @@ const initServer = async () => {
         app,
         resolvers,
         introspection: true,
-        context: { db: db.orm(pool), logger: logger },
+        context: { db: db.orm(pool, logger), logger: logger },
     });
     apolloServer.applyMiddleware({
         app,

@@ -32,7 +32,7 @@ const resolvers = {
 
                 return true;
             } catch (error) {
-                logger.error("Error in addProduct", error);
+                logger.error("failed to add product", error);
                 return;
             }
         },
@@ -50,7 +50,7 @@ const resolvers = {
 
                 return true;
             } catch (error) {
-                logger.error("Error in updateProduct", error);
+                logger.error("failed to update product", error);
                 return;
             }
         },
@@ -65,7 +65,7 @@ const resolvers = {
 
                 return true;
             } catch (error) {
-                logger.error("Error in removeProduct", error);
+                logger.error("failed to remove product", error);
                 return;
             }
         },
@@ -88,7 +88,7 @@ const resolvers = {
 
                 return true;
             } catch (error) {
-                logger.error("Error in  moveToFolder", error);
+                logger.error("failed to move to folder", error);
                 return;
             }
         },
@@ -104,7 +104,7 @@ const resolvers = {
 
                 return true;
             } catch (error) {
-                logger.error("Error in removeFromFolder", error);
+                logger.error("failed to remove from folder", error);
                 return;
             }
         },
@@ -124,7 +124,7 @@ const resolvers = {
 
                 return true;
             } catch (error) {
-                logger.error("Error in addFolder", error);
+                logger.error("failed to add folder", error);
                 return;
             }
         },
@@ -142,7 +142,7 @@ const resolvers = {
 
                 return true;
             } catch (error) {
-                logger.error("Error in updateFolder", error);
+                logger.error("failed to update folder", error);
                 return;
             }
         },
@@ -156,7 +156,7 @@ const resolvers = {
 
                 return true;
             } catch (error) {
-                logger.error("Error in removeFolder", error);
+                logger.error("failed to remove folder", error);
                 return;
             }
         },
@@ -175,7 +175,7 @@ const resolvers = {
 
                 return true;
             } catch (error) {
-                logger.error("Error in addVendor", error);
+                logger.error("failed to add vendor", error);
                 return;
             }
         },
@@ -187,7 +187,7 @@ const resolvers = {
 
                 return res;
             } catch (error) {
-                logger.error("Error in getAllSuggests", error);
+                logger.error("failed to get all suggests", error);
                 return;
             }
 
@@ -208,7 +208,7 @@ const resolvers = {
                 const result = foundEntities.map((ent) => JSON.parse(ent.entity));
                 return result;
             } catch (error) {
-                logger.error("Error in getProducts: ", error);
+                logger.error("failed to get products", error);
                 return;
             }
         },
@@ -232,7 +232,7 @@ const resolvers = {
                 const result = foundEntities.map((ent) => JSON.parse(ent.entity));
                 return result;
             } catch (error) {
-                logger.error("Error in searchProduct: ", error);
+                logger.error("failed to search product", error);
                 return;
             }
         },
@@ -252,7 +252,7 @@ const resolvers = {
                 const result = foundEntities.map((ent) => JSON.parse(ent.entity));
                 return result;
             } catch (error) {
-                logger.error("Error in getFolders: ", error);
+                logger.error("failed to get folders", error);
                 return;
             }
         },
@@ -267,7 +267,7 @@ const resolvers = {
 
                 return folder.map(fldr => fldr.object);
             } catch (error) {
-                logger.error("Error in getFromFolder: ", error);
+                logger.error("failed to get from folder", error);
                 return;
             }
         },

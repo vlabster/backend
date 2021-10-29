@@ -265,7 +265,7 @@ const orm = (pool, logger) => {
         conn.release();
         if (err) {
             // TODO logger
-            console.log(this, "failed to execute query", err.sqlMessage);
+            logger.error("failed to execute query", err.sqlMessage);
             reject(err);
 
             return;
