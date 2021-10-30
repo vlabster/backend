@@ -92,7 +92,7 @@ type Mutation {
     removeProduct(id: ID!): Boolean!
 
     moveToFolder(input: moveToFolderInput!): Boolean!
-    removeFromFolder(subject: ID!, object: ID!): Boolean!
+    removeFromFolder(subject: ID!, predicate: String!, object: ID!): Boolean!
 
     addFolder(input: FolderInput!): Boolean!
     updateFolder(id: ID!, input: FolderInput!): Boolean!
