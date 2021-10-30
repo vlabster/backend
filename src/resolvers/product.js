@@ -1,8 +1,6 @@
 const { uuid2id } = require("../helpers/convertUuid");
 const { prepareQueryWhereInIDs } = require("../helpers/prepareQuery");
 
-// QUERIES
-
 async function getProducts(_, data, { logger, db }) {
     const ids = data.uuIds
         .map((uuid) => uuid2id(uuid))
@@ -20,7 +18,6 @@ async function getProducts(_, data, { logger, db }) {
         return result;
     } catch (error) {
         logger.error("failed to get products", error);
-        return;
     }
 }
 // eslint-disable-next-line complexity
@@ -44,12 +41,8 @@ async function searchProduct(_, data, { logger, db }) {
         return result;
     } catch (error) {
         logger.error("failed to search product", error);
-        return;
     }
 }
-
-// MUTATIONS
-
 async function addProduct(_, { input }, { logger, db }) {
     const id = uuid2id(input.id);
     if (id === "") {
@@ -75,7 +68,6 @@ async function addProduct(_, { input }, { logger, db }) {
         return true;
     } catch (error) {
         logger.error("failed to add product", error);
-        return;
     }
 }
 async function updateProduct(_, data, { logger, db }) {
@@ -93,7 +85,6 @@ async function updateProduct(_, data, { logger, db }) {
         return true;
     } catch (error) {
         logger.error("failed to update product", error);
-        return;
     }
 }
 async function removeProduct(_, data, { logger, db }) {
@@ -108,7 +99,6 @@ async function removeProduct(_, data, { logger, db }) {
         return true;
     } catch (error) {
         logger.error("failed to remove product", error);
-        return;
     }
 }
 

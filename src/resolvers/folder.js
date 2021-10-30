@@ -1,9 +1,6 @@
 const { uuid2id } = require("../helpers/convertUuid");
 const { prepareQueryWhereInIDs } = require("../helpers/prepareQuery");
 
-
-// QUERIES
-
 async function getFolders(_, data, { logger, db }) {
     const ids = data.uuIds
         .map((uuid) => uuid2id(uuid))
@@ -15,17 +12,13 @@ async function getFolders(_, data, { logger, db }) {
 
     try {
         const getIDsWithX = prepareQueryWhereInIDs(ids);
-        const foundEntities = await db.getEntities(getIDsWithX);
-
-        const result = foundEntities.map((ent) => JSON.parse(ent.entity));
-        return result;
+        const foundEntities = await db.getEntities(getIDsWithX)
+        return foundEntities.map((ent) => JSON.parse(ent.entity));
     } catch (error) {
         logger.error("failed to get folders", error);
-        return;
     }
 }
-
-async function getFromFolder (_, data, { logger, db }) {
+async function getFromFolder(_, data, { logger, db }) {
     const subject = uuid2id(data.subject);
     if (subject === "") {
         return new Error("uuid is invalid");
@@ -40,12 +33,8 @@ async function getFromFolder (_, data, { logger, db }) {
         return folder.map(fldr => fldr.object);
     } catch (error) {
         logger.error("failed to get from folder", error);
-        return;
     }
 }
-
-// MUTATIONS
-
 async function addFolder(_, { input }, { logger, db }) {
     const id = uuid2id(input.id);
     if (id === "") {
@@ -62,7 +51,6 @@ async function addFolder(_, { input }, { logger, db }) {
         return true;
     } catch (error) {
         logger.error("failed to add folder", error);
-        return;
     }
 }
 async function updateFolder(_, data, { logger, db }) {
@@ -80,7 +68,6 @@ async function updateFolder(_, data, { logger, db }) {
         return true;
     } catch (error) {
         logger.error("failed to update folder", error);
-        return;
     }
 }
 async function removeFolder(_, data, { logger, db }) {
@@ -94,7 +81,6 @@ async function removeFolder(_, data, { logger, db }) {
         return true;
     } catch (error) {
         logger.error("failed to remove folder", error);
-        return;
     }
 }
 async function moveToFolder(_, { input }, { logger, db }) {
@@ -116,7 +102,6 @@ async function moveToFolder(_, { input }, { logger, db }) {
         return true;
     } catch (error) {
         logger.error("failed to move to folder", error);
-        return;
     }
 }
 async function removeFromFolder(_, data, { logger, db }) {
@@ -136,7 +121,6 @@ async function removeFromFolder(_, data, { logger, db }) {
         return true;
     } catch (error) {
         logger.error("failed to remove from folder", error);
-        return;
     }
 }
 

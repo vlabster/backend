@@ -35,7 +35,6 @@ const resolvers = {
                 return res;
             } catch (error) {
                 logger.error("failed to get all suggests", error);
-                return;
             }
 
         },

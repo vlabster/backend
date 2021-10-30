@@ -16,7 +16,6 @@ async function addVendor(_, { input }, { logger, db }) {
         return true;
     } catch (error) {
         logger.error("failed to add vendor", error);
-        return;
     }
 }
 
