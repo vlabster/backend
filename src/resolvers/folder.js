@@ -18,6 +18,7 @@ async function getFolders(_, data, { logger, db }) {
         logger.error("failed to get folders", error);
     }
 }
+
 async function getFromFolder(_, data, { logger, db }) {
     const subject = uuid2id(data.subject);
     if (subject === "") {
@@ -35,6 +36,7 @@ async function getFromFolder(_, data, { logger, db }) {
         logger.error("failed to get from folder", error);
     }
 }
+
 async function addFolder(_, { input }, { logger, db }) {
     const id = uuid2id(input.id);
     if (id === "") {
@@ -53,6 +55,7 @@ async function addFolder(_, { input }, { logger, db }) {
         logger.error("failed to add folder", error);
     }
 }
+
 async function updateFolder(_, data, { logger, db }) {
     const id = uuid2id(data.id);
     if (id === "") {
@@ -70,6 +73,7 @@ async function updateFolder(_, data, { logger, db }) {
         logger.error("failed to update folder", error);
     }
 }
+
 async function removeFolder(_, data, { logger, db }) {
     const id = uuid2id(data.id);
     if (id === "") {
@@ -83,6 +87,7 @@ async function removeFolder(_, data, { logger, db }) {
         logger.error("failed to remove folder", error);
     }
 }
+
 async function moveToFolder(_, { input }, { logger, db }) {
     const subject = uuid2id(input.subject);
     const object = uuid2id(input.object);
@@ -104,6 +109,7 @@ async function moveToFolder(_, { input }, { logger, db }) {
         logger.error("failed to move to folder", error);
     }
 }
+
 async function removeFromFolder(_, data, { logger, db }) {
     const subject = uuid2id(data.subject);
     const object = uuid2id(data.object);

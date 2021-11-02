@@ -20,6 +20,7 @@ async function getProducts(_, data, { logger, db }) {
         logger.error("failed to get products", error);
     }
 }
+
 // eslint-disable-next-line complexity
 async function searchProduct(_, data, { logger, db }) {
     if (data.title.length < 3) {
@@ -43,6 +44,7 @@ async function searchProduct(_, data, { logger, db }) {
         logger.error("failed to search product", error);
     }
 }
+
 async function addProduct(_, { input }, { logger, db }) {
     const id = uuid2id(input.id);
     if (id === "") {
@@ -70,6 +72,7 @@ async function addProduct(_, { input }, { logger, db }) {
         logger.error("failed to add product", error);
     }
 }
+
 async function updateProduct(_, data, { logger, db }) {
     const id = uuid2id(data.id);
     if (id === "") {
@@ -87,6 +90,7 @@ async function updateProduct(_, data, { logger, db }) {
         logger.error("failed to update product", error);
     }
 }
+
 async function removeProduct(_, data, { logger, db }) {
     const id = uuid2id(data.id);
     if (id === "") {
