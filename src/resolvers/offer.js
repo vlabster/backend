@@ -1,7 +1,7 @@
 const { uuid2id } = require("../helpers/convertUuid");
 const { prepareQueryWhereInIDs } = require("../helpers/prepareQuery");
 
-async function getFolders(_, data, { logger, db }) {
+async function getOffers(_, data, { logger, db }) {
     const ids = data.uuIds
         .map((uuid) => uuid2id(uuid))
         .filter((id) => id !== "");
@@ -19,7 +19,7 @@ async function getFolders(_, data, { logger, db }) {
     }
 }
 
-async function getFromFolder(_, data, { logger, db }) {
+async function getOffersOfProduct(_, data, { logger, db }) {
     const subject = uuid2id(data.subject);
     if (subject === "") {
         return new Error("uuid is invalid");
@@ -37,7 +37,8 @@ async function getFromFolder(_, data, { logger, db }) {
     }
 }
 
-async function addFolder(_, { input }, { logger, db }) {
+async function addOffer(_, { input }, { logger, db }) {
+    logger.info("OFFER: ", input);
     const id = uuid2id(input.id);
     if (id === "") {
         return new Error("uuid is invalid");
@@ -47,7 +48,7 @@ async function addFolder(_, { input }, { logger, db }) {
         const r = await db.createEntity({
             entity: JSON.stringify(input),
             id: id,
-            type: "ru.webrx.folder",
+            type: "ru.webrx.offer",
         });
 
         return true;
@@ -56,7 +57,7 @@ async function addFolder(_, { input }, { logger, db }) {
     }
 }
 
-async function updateFolder(_, data, { logger, db }) {
+async function updateOffer(_, data, { logger, db }) {
     const id = uuid2id(data.id);
     if (id === "") {
         return new Error("uuid is invalid");
@@ -74,7 +75,7 @@ async function updateFolder(_, data, { logger, db }) {
     }
 }
 
-async function removeFolder(_, data, { logger, db }) {
+async function removeOffer(_, data, { logger, db }) {
     const id = uuid2id(data.id);
     if (id === "") {
         return new Error("uuid is invalid");
@@ -88,7 +89,7 @@ async function removeFolder(_, data, { logger, db }) {
     }
 }
 
-async function moveToFolder(_, { input }, { logger, db }) {
+async function moveOfferToProduct(_, { input }, { logger, db }) {
     const subject = uuid2id(input.subject);
     const object = uuid2id(input.object);
 
@@ -110,9 +111,9 @@ async function moveToFolder(_, { input }, { logger, db }) {
     }
 }
 
-async function removeFromFolder(_, { input }, { logger, db }) {
-    const subject = uuid2id(input.subject);
-    const object = uuid2id(input.object);
+async function removeOfferFromProduct(_, data, { logger, db }) {
+    const subject = uuid2id(data.subject);
+    const object = uuid2id(data.object);
     if (subject === "") {
         return new Error("uuid is invalid");
     }
@@ -120,7 +121,7 @@ async function removeFromFolder(_, { input }, { logger, db }) {
     try {
         const r = await db.removeTriple({
             object,
-            predicate: input.predicate,
+            predicate: data.predicate,
             subject,
         });
 
@@ -132,11 +133,11 @@ async function removeFromFolder(_, { input }, { logger, db }) {
 
 
 module.exports = {
-    addFolder,
-    getFolders,
-    getFromFolder,
-    moveToFolder,
-    removeFolder,
-    removeFromFolder,
-    updateFolder,
+    addOffer,
+    getOffers,
+    getOffersOfProduct,
+    moveOfferToProduct,
+    removeOffer,
+    removeOfferFromProduct,
+    updateOffer,
 };

@@ -6,10 +6,18 @@ const {
     addFolder, updateFolder, removeFolder, getFolders,
     getFromFolder, moveToFolder, removeFromFolder
 } = require("./folder");
+
+const {
+    addOffer, updateOffer, removeOffer,
+    moveOfferToProduct, removeOfferFromProduct,
+    getOffers, getOffersOfProduct
+} = require("./offer");
+
 const {
     getProducts, searchProduct, addProduct,
     updateProduct, removeProduct
 } = require("./product");
+
 const { addVendor } = require("./vendor");
 
 const resolvers = {
@@ -17,6 +25,13 @@ const resolvers = {
         addProduct: addProduct,
         updateProduct: updateProduct,
         removeProduct: removeProduct,
+
+        addOffer: addOffer,
+        updateOffer: updateOffer,
+        removeOffer: removeOffer,
+
+        moveOfferToProduct: moveOfferToProduct,
+        removeOfferFromProduct: removeOfferFromProduct,
 
         addFolder: addFolder,
         updateFolder: updateFolder,
@@ -40,6 +55,10 @@ const resolvers = {
         },
         getProducts: getProducts,
         searchProduct: searchProduct,
+
+        getOffers: getOffers,
+        getOffersOfProduct: getOffersOfProduct,
+
         getFolders: getFolders,
         getFromFolder: getFromFolder,
     },
