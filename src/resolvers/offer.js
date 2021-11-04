@@ -15,7 +15,7 @@ async function getOffers(_, data, { logger, db }) {
         const foundEntities = await db.getEntities(getIDsWithX);
         return foundEntities.map((ent) => JSON.parse(ent.entity));
     } catch (error) {
-        logger.error("failed to get folders", error);
+        logger.error("failed to get offers", error);
     }
 }
 
@@ -26,19 +26,18 @@ async function getOffersOfProduct(_, data, { logger, db }) {
     }
 
     try {
-        const folder = await db.getEdge({
-            predicate: data.predicate,
+        const edges = await db.getEdge({
+            predicate: "predicate.offer",
             subject,
         });
 
-        return folder.map(fldr => fldr.object);
+        return edges.map(({ object }) => object);
     } catch (error) {
-        logger.error("failed to get from folder", error);
+        logger.error("failed to get offers for product", error);
     }
 }
 
 async function addOffer(_, { input }, { logger, db }) {
-    logger.info("OFFER: ", input);
     const id = uuid2id(input.id);
     if (id === "") {
         return new Error("uuid is invalid");
@@ -53,7 +52,7 @@ async function addOffer(_, { input }, { logger, db }) {
 
         return true;
     } catch (error) {
-        logger.error("failed to add folder", error);
+        logger.error("failed to add offer", error);
     }
 }
 
@@ -71,7 +70,7 @@ async function updateOffer(_, data, { logger, db }) {
 
         return true;
     } catch (error) {
-        logger.error("failed to update folder", error);
+        logger.error("failed to update offer", error);
     }
 }
 
@@ -85,11 +84,11 @@ async function removeOffer(_, data, { logger, db }) {
 
         return true;
     } catch (error) {
-        logger.error("failed to remove folder", error);
+        logger.error("failed to remove offer", error);
     }
 }
 
-async function moveOfferToProduct(_, { input }, { logger, db }) {
+async function moveProductToOffer(_, { input }, { logger, db }) {
     const subject = uuid2id(input.subject);
     const object = uuid2id(input.object);
 
@@ -100,20 +99,20 @@ async function moveOfferToProduct(_, { input }, { logger, db }) {
     try {
         const rTriple = await db.createTriple({
             object: object,
-            predicate: input.predicate,
+            predicate: "predicate.offer",
             priority: input.priority,
             subject: subject,
         });
 
         return true;
     } catch (error) {
-        logger.error("failed to move to folder", error);
+        logger.error("failed to move to offer", error);
     }
 }
 
-async function removeOfferFromProduct(_, data, { logger, db }) {
-    const subject = uuid2id(data.subject);
-    const object = uuid2id(data.object);
+async function removeProductFromOffer(_, { input }, { logger, db }) {
+    const subject = uuid2id(input.subject);
+    const object = uuid2id(input.object);
     if (subject === "") {
         return new Error("uuid is invalid");
     }
@@ -121,13 +120,13 @@ async function removeOfferFromProduct(_, data, { logger, db }) {
     try {
         const r = await db.removeTriple({
             object,
-            predicate: data.predicate,
+            predicate: "predicate.offer",
             subject,
         });
 
         return true;
     } catch (error) {
-        logger.error("failed to remove from folder", error);
+        logger.error("failed to remove from offer", error);
     }
 }
 
@@ -136,8 +135,8 @@ module.exports = {
     addOffer,
     getOffers,
     getOffersOfProduct,
-    moveOfferToProduct,
+    moveProductToOffer,
     removeOffer,
-    removeOfferFromProduct,
+    removeProductFromOffer,
     updateOffer,
 };

@@ -26,12 +26,12 @@ async function getFromFolder(_, data, { logger, db }) {
     }
 
     try {
-        const folder = await db.getEdge({
-            predicate: data.predicate,
+        const edges = await db.getEdge({
+            predicate: "predicate.folder",
             subject,
         });
 
-        return folder.map(fldr => fldr.object);
+        return edges.map(({ object }) => object);
     } catch (error) {
         logger.error("failed to get from folder", error);
     }
@@ -99,7 +99,7 @@ async function moveToFolder(_, { input }, { logger, db }) {
     try {
         const rTriple = await db.createTriple({
             object: object,
-            predicate: input.predicate,
+            predicate: "predicate.folder",
             priority: input.priority,
             subject: subject,
         });
@@ -120,7 +120,7 @@ async function removeFromFolder(_, { input }, { logger, db }) {
     try {
         const r = await db.removeTriple({
             object,
-            predicate: input.predicate,
+            predicate: "predicate.folder",
             subject,
         });
 

@@ -45,9 +45,9 @@ type Query {
     searchProduct(title: String!): [Product]
 
     getOffers(uuIds: [ID]!): [Offer]
-    getOffersOfProduct(subject: ID!, predicate: String!): [ID]
+    getOffersOfProduct(subject: ID!): [ID]
 
-    getFromFolder(subject: ID!, predicate: String!): [ID]
+    getFromFolder(subject: ID!): [ID]
     getFolders(uuIds: [ID]!): [Folder]
 }
 
@@ -90,14 +90,12 @@ input VendorInput {
 
 input TripleInput {
     subject: ID!
-    predicate: String!
     object: ID!
     priority: Int
 }
 
 input RemoveTripleInput {
     subject: ID!
-    predicate: String!
     object: ID!
 }
 
@@ -110,8 +108,8 @@ type Mutation {
     updateOffer(id: ID!, input: OfferInput!): Boolean!
     removeOffer(id: ID!): Boolean!
 
-    moveOfferToProduct(input: TripleInput!): Boolean!
-    removeOfferFromProduct(input: RemoveTripleInput!): Boolean!
+    moveProductToOffer(input: TripleInput!): Boolean!
+    removeProductFromOffer(input: RemoveTripleInput!): Boolean!
 
     addFolder(input: FolderInput!): Boolean!
     updateFolder(id: ID!, input: FolderInput!): Boolean!

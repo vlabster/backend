@@ -9,7 +9,7 @@ const {
 
 const {
     addOffer, updateOffer, removeOffer,
-    moveOfferToProduct, removeOfferFromProduct,
+    moveProductToOffer, removeProductFromOffer,
     getOffers, getOffersOfProduct
 } = require("./offer");
 
@@ -30,8 +30,8 @@ const resolvers = {
         updateOffer: updateOffer,
         removeOffer: removeOffer,
 
-        moveOfferToProduct: moveOfferToProduct,
-        removeOfferFromProduct: removeOfferFromProduct,
+        moveProductToOffer: moveProductToOffer,
+        removeProductFromOffer: removeProductFromOffer,
 
         addFolder: addFolder,
         updateFolder: updateFolder,
