@@ -27,11 +27,11 @@ async function getOffersOfProduct(_, data, { logger, db }) {
 
     try {
         const edges = await db.getEdge({
-            predicate: "predicate.offer",
+            predicate: "ru.webrx.offer",
             subject,
         });
 
-        return edges.map(({ object }) => object);
+        return edges.map((edge) => edge.object);
     } catch (error) {
         logger.error("failed to get offers for product", error);
     }
@@ -99,7 +99,7 @@ async function moveProductToOffer(_, { input }, { logger, db }) {
     try {
         const rTriple = await db.createTriple({
             object: object,
-            predicate: "predicate.offer",
+            predicate: "ru.webrx.offer",
             priority: input.priority,
             subject: subject,
         });
@@ -120,7 +120,7 @@ async function removeProductFromOffer(_, { input }, { logger, db }) {
     try {
         const r = await db.removeTriple({
             object,
-            predicate: "predicate.offer",
+            predicate: "ru.webrx.offer",
             subject,
         });
 
