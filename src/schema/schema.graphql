@@ -28,7 +28,6 @@ type Product implements Node {
     fullTitle: String
     price: String
     vendors: [Vendor]
-    offers: [Offer]
 }
 
 type Folder {
@@ -46,6 +45,8 @@ type Query {
 
     getOffers(uuIds: [ID]!): [Offer]
     getOffersOfProduct(subject: ID!): [ID]
+
+    getOffersOfProductById(subject: ID!): [Offer]
 
     getFromFolder(subject: ID!): [ID]
     getFolders(uuIds: [ID]!): [Folder]

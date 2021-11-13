@@ -1,4 +1,4 @@
-const { uuid2id } = require("../helpers/convertUuid");
+const { uuid2id, id2uuid } = require("../helpers/convertUuid");
 const { prepareQueryWhereInIDs } = require("../helpers/prepareQuery");
 
 async function getOffers(_, data, { logger, db }) {
@@ -31,7 +31,30 @@ async function getOffersOfProduct(_, data, { logger, db }) {
             subject,
         });
 
-        return edges.map((edge) => edge.object);
+        return edges.map((edge) => id2uuid(edge.object)).filter((uuid) => uuid !== "");
+    } catch (error) {
+        logger.error("failed to get offers for product", error);
+    }
+}
+
+async function getOffersOfProductById(_, data, { logger, db }) {
+    const subject = uuid2id(data.subject);
+    if (subject === "") {
+        return new Error("uuid is invalid");
+    }
+
+    try {
+        const edges = await db.getEdge({
+            predicate: "ru.webrx.offer",
+            subject,
+        });
+
+        const foundOfferIds = edges
+            .map((edge) => edge.object);
+
+        const getIDsWithX = prepareQueryWhereInIDs(foundOfferIds);
+        const foundEntities = await db.getEntities(getIDsWithX);
+        return foundEntities.map((ent) => JSON.parse(ent.entity));
     } catch (error) {
         logger.error("failed to get offers for product", error);
     }
@@ -135,6 +158,9 @@ module.exports = {
     addOffer,
     getOffers,
     getOffersOfProduct,
+
+    getOffersOfProductById,
+
     moveProductToOffer,
     removeOffer,
     removeProductFromOffer,

@@ -10,7 +10,7 @@ const {
 const {
     addOffer, updateOffer, removeOffer,
     moveProductToOffer, removeProductFromOffer,
-    getOffers, getOffersOfProduct
+    getOffers, getOffersOfProduct, getOffersOfProductById
 } = require("./offer");
 
 const {
@@ -58,6 +58,8 @@ const resolvers = {
 
         getOffers: getOffers,
         getOffersOfProduct: getOffersOfProduct,
+
+        getOffersOfProductById: getOffersOfProductById,
 
         getFolders: getFolders,
         getFromFolder: getFromFolder,
