@@ -28,7 +28,6 @@ type Product implements Node {
     fullTitle: String
     price: String
     vendors: [Vendor]
-    offers: [Offer]
 }
 
 type Folder {
@@ -44,7 +43,12 @@ type Query {
     getProducts(uuIds: [ID]!): [Product]
     searchProduct(title: String!): [Product]
 
-    getFromFolder(subject: ID!, predicate: String!): [ID]
+    getOffers(uuIds: [ID]!): [Offer]
+    getOffersOfProduct(subject: ID!): [ID]
+
+    getOffersOfProductById(subject: ID!): [Offer]
+
+    getFromFolder(subject: ID!): [ID]
     getFolders(uuIds: [ID]!): [Folder]
 }
 
@@ -68,6 +72,12 @@ input ProductInput {
     description: String
 }
 
+input OfferInput {
+    id: ID!
+    seller: ID!
+    prices: [String]!
+}
+
 input FolderInput {
     id: ID!
     title: String!
@@ -79,11 +89,15 @@ input VendorInput {
     title: String!
 }
 
-input moveToFolderInput {
+input TripleInput {
     subject: ID!
-    predicate: String!
     object: ID!
     priority: Int
+}
+
+input RemoveTripleInput {
+    subject: ID!
+    object: ID!
 }
 
 type Mutation {
@@ -91,12 +105,20 @@ type Mutation {
     updateProduct(id: ID!, input: ProductInput!): Boolean!
     removeProduct(id: ID!): Boolean!
 
-    moveToFolder(input: moveToFolderInput!): Boolean!
-    removeFromFolder(subject: ID!, predicate: String!, object: ID!): Boolean!
+    addOffer(input: OfferInput!): Boolean!
+    updateOffer(id: ID!, input: OfferInput!): Boolean!
+    removeOffer(id: ID!): Boolean!
+
+    moveProductToOffer(input: TripleInput!): Boolean!
+    removeProductFromOffer(input: RemoveTripleInput!): Boolean!
 
     addFolder(input: FolderInput!): Boolean!
     updateFolder(id: ID!, input: FolderInput!): Boolean!
     removeFolder(id: ID!): Boolean!
+
+    moveToFolder(input: TripleInput!): Boolean!
+    removeFromFolder(input: RemoveTripleInput!): Boolean!
+
 
     addVendor(input: VendorInput!): Boolean!
     # updateProduct(
@@ -116,9 +138,14 @@ type Vendor implements Node {
 
 type Offer implements Node {
     id: ID!
-    seller: LegalEntity!
-    prices: [Price]!
+    seller: ID!
+    prices: [String]!
 }
+# type Offer implements Node {
+#     id: ID!
+#     seller: LegalEntity!
+#     prices: [Price]!
+# }
 
 union LegalEntity = Person | Company
 

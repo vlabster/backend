@@ -55,11 +55,7 @@ async function addProduct(_, { input }, { logger, db }) {
         const rEntity = await db.createEntity({
             id: id,
             type: "ru.webrx.product",
-            entity: JSON.stringify({
-                id: id,
-                title: input.title,
-                description: input.description,
-            }),
+            entity: JSON.stringify(input),
         });
         const rSuggest = await db.addSuggest({
             id: id,

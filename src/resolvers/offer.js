@@ -1,7 +1,7 @@
-const { uuid2id } = require("../helpers/convertUuid");
+const { uuid2id, id2uuid } = require("../helpers/convertUuid");
 const { prepareQueryWhereInIDs } = require("../helpers/prepareQuery");
 
-async function getFolders(_, data, { logger, db }) {
+async function getOffers(_, data, { logger, db }) {
     const ids = data.uuIds
         .map((uuid) => uuid2id(uuid))
         .filter((id) => id !== "");
@@ -15,11 +15,11 @@ async function getFolders(_, data, { logger, db }) {
         const foundEntities = await db.getEntities(getIDsWithX);
         return foundEntities.map((ent) => JSON.parse(ent.entity));
     } catch (error) {
-        logger.error("failed to get folders", error);
+        logger.error("failed to get offers", error);
     }
 }
 
-async function getFromFolder(_, data, { logger, db }) {
+async function getOffersOfProduct(_, data, { logger, db }) {
     const subject = uuid2id(data.subject);
     if (subject === "") {
         return new Error("uuid is invalid");
@@ -27,17 +27,40 @@ async function getFromFolder(_, data, { logger, db }) {
 
     try {
         const edges = await db.getEdge({
-            predicate: "ru.webrx.folder",
+            predicate: "ru.webrx.offer",
             subject,
         });
 
-        return edges.map((edge) => edge.object);
+        return edges.map((edge) => id2uuid(edge.object)).filter((uuid) => uuid !== "");
     } catch (error) {
-        logger.error("failed to get from folder", error);
+        logger.error("failed to get offers for product", error);
     }
 }
 
-async function addFolder(_, { input }, { logger, db }) {
+async function getOffersOfProductById(_, data, { logger, db }) {
+    const subject = uuid2id(data.subject);
+    if (subject === "") {
+        return new Error("uuid is invalid");
+    }
+
+    try {
+        const edges = await db.getEdge({
+            predicate: "ru.webrx.offer",
+            subject,
+        });
+
+        const foundOfferIds = edges
+            .map((edge) => edge.object);
+
+        const getIDsWithX = prepareQueryWhereInIDs(foundOfferIds);
+        const foundEntities = await db.getEntities(getIDsWithX);
+        return foundEntities.map((ent) => JSON.parse(ent.entity));
+    } catch (error) {
+        logger.error("failed to get offers for product", error);
+    }
+}
+
+async function addOffer(_, { input }, { logger, db }) {
     const id = uuid2id(input.id);
     if (id === "") {
         return new Error("uuid is invalid");
@@ -47,16 +70,16 @@ async function addFolder(_, { input }, { logger, db }) {
         const r = await db.createEntity({
             entity: JSON.stringify(input),
             id: id,
-            type: "ru.webrx.folder",
+            type: "ru.webrx.offer",
         });
 
         return true;
     } catch (error) {
-        logger.error("failed to add folder", error);
+        logger.error("failed to add offer", error);
     }
 }
 
-async function updateFolder(_, data, { logger, db }) {
+async function updateOffer(_, data, { logger, db }) {
     const id = uuid2id(data.id);
     if (id === "") {
         return new Error("uuid is invalid");
@@ -70,11 +93,11 @@ async function updateFolder(_, data, { logger, db }) {
 
         return true;
     } catch (error) {
-        logger.error("failed to update folder", error);
+        logger.error("failed to update offer", error);
     }
 }
 
-async function removeFolder(_, data, { logger, db }) {
+async function removeOffer(_, data, { logger, db }) {
     const id = uuid2id(data.id);
     if (id === "") {
         return new Error("uuid is invalid");
@@ -84,11 +107,11 @@ async function removeFolder(_, data, { logger, db }) {
 
         return true;
     } catch (error) {
-        logger.error("failed to remove folder", error);
+        logger.error("failed to remove offer", error);
     }
 }
 
-async function moveToFolder(_, { input }, { logger, db }) {
+async function moveProductToOffer(_, { input }, { logger, db }) {
     const subject = uuid2id(input.subject);
     const object = uuid2id(input.object);
 
@@ -99,18 +122,18 @@ async function moveToFolder(_, { input }, { logger, db }) {
     try {
         const rTriple = await db.createTriple({
             object: object,
-            predicate: "ru.webrx.folder",
+            predicate: "ru.webrx.offer",
             priority: input.priority,
             subject: subject,
         });
 
         return true;
     } catch (error) {
-        logger.error("failed to move to folder", error);
+        logger.error("failed to move to offer", error);
     }
 }
 
-async function removeFromFolder(_, { input }, { logger, db }) {
+async function removeProductFromOffer(_, { input }, { logger, db }) {
     const subject = uuid2id(input.subject);
     const object = uuid2id(input.object);
     if (subject === "") {
@@ -120,23 +143,26 @@ async function removeFromFolder(_, { input }, { logger, db }) {
     try {
         const r = await db.removeTriple({
             object,
-            predicate: "ru.webrx.folder",
+            predicate: "ru.webrx.offer",
             subject,
         });
 
         return true;
     } catch (error) {
-        logger.error("failed to remove from folder", error);
+        logger.error("failed to remove from offer", error);
     }
 }
 
 
 module.exports = {
-    addFolder,
-    getFolders,
-    getFromFolder,
-    moveToFolder,
-    removeFolder,
-    removeFromFolder,
-    updateFolder,
+    addOffer,
+    getOffers,
+    getOffersOfProduct,
+
+    getOffersOfProductById,
+
+    moveProductToOffer,
+    removeOffer,
+    removeProductFromOffer,
+    updateOffer,
 };
