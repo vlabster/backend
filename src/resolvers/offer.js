@@ -34,6 +34,7 @@ async function getOffersOfProduct(_, data, { logger, db }) {
         return edges.map((edge) => id2uuid(edge.object)).filter((uuid) => uuid !== "");
     } catch (error) {
         logger.error("failed to get offers for product", error);
+        throw Error(error);
     }
 }
 
@@ -57,6 +58,7 @@ async function getOffersOfProductById(_, data, { logger, db }) {
         return foundEntities.map((ent) => JSON.parse(ent.entity));
     } catch (error) {
         logger.error("failed to get offers for product", error);
+        throw Error(error);
     }
 }
 
