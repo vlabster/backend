@@ -4,27 +4,27 @@ USE `stock`;
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE entities (
-  `id` binary(16) NOT NULL COMMENT 'UUID сущности',
-  `type` varchar(255) NOT NULL COMMENT 'Тип сущности',
-  `entity` json NOT NULL COMMENT 'сущность',
-  `created` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Дата создания',
-  `updated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Дата обновления',
-  `deleted` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'флаг удаления',
+CREATE TABLE `entities` (
+  `id` binary(16) NOT NULL COMMENT 'UUID entity',
+  `type` varchar(255) NOT NULL COMMENT 'type entity',
+  `entity` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT 'entity' CHECK (json_valid(`entity`)),
+  `created` datetime NOT NULL DEFAULT current_timestamp() COMMENT 'date create at',
+  `updated` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT 'date update at',
+  `deleted` tinyint(1) NOT NULL DEFAULT 0 COMMENT 'is deleted',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Сущности';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='entities';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
-CREATE TABLE triples (
-    `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-    `subject` binary(16) NOT NULL COMMENT 'UUID товара',
-    `predicate` varchar(255) NOT NULL COMMENT 'Отношение субьекта к объекту',
-    `object` binary(16) NOT NULL COMMENT 'UUID объекта',
-    `priority` int NOT NULL DEFAULT '1' COMMENT 'Номер приоритета',
-    `deleted` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Флаг удаления',
-    PRIMARY KEY (`id`),
-    KEY (`subject`, `predicate`, `deleted`)
-);
+CREATE TABLE `triples` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `subject` binary(16) NOT NULL COMMENT 'UUID subject',
+  `predicate` varchar(255) NOT NULL COMMENT 'relation between subject and object',
+  `object` binary(16) NOT NULL COMMENT 'UUID object',
+  `priority` int(11) NOT NULL DEFAULT 1 COMMENT 'order',
+  `deleted` tinyint(1) NOT NULL DEFAULT 0 COMMENT 'is deleted',
+  PRIMARY KEY (`id`),
+  KEY `subject` (`subject`,`predicate`,`deleted`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='triples';
 
 CREATE TABLE suggestion_products (
     `id` binary(16) NOT NULL COMMENT 'UUID product',
