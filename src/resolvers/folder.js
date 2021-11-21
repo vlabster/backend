@@ -56,7 +56,7 @@ async function catalog(_, { id }, { logger, db }) {
 
         return foundEntities.map((ent) => JSON.parse(ent.entity));
     } catch (error) {
-        logger.error("failed to get products from folder", error);
+        logger.error("failed to get catalog", error);
         throw Error(error);
     }
 }
