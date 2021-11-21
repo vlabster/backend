@@ -4,7 +4,7 @@ const {
 } = require("graphql/validation/rules/ProvidedRequiredArgumentsRule");
 const {
     addFolder, updateFolder, removeFolder, getFolders,
-    getFromFolder, moveToFolder, removeFromFolder
+    getFromFolder, moveToFolder, removeFromFolder, catalog
 } = require("./folder");
 
 const {
@@ -63,7 +63,20 @@ const resolvers = {
 
         getFolders: getFolders,
         getFromFolder: getFromFolder,
+        catalog: catalog,
     },
+    CatalogItem: {
+        __resolveType(data, ctx, info) {
+            if (data.price) {
+                return info.schema.getType("Product");
+            }
+            if (data.title) {
+                return info.schema.getType("Folder");
+            }
+
+            return null;
+        }
+    }
 };
 
 module.exports = resolvers;

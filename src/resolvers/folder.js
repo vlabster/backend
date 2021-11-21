@@ -37,6 +37,30 @@ async function getFromFolder(_, data, { logger, db }) {
     }
 }
 
+async function catalog(_, { id }, { logger, db }) {
+    const subject = uuid2id(id);
+    if (subject === "") {
+        return new Error("uuid is invalid");
+    }
+
+    try {
+        const edges = await db.getEdge({
+            predicate: "ru.webrx.folder",
+            subject,
+        });
+
+        const foundOfferIds = edges.map((edge) => edge.object);
+
+        const getIDsWithX = prepareQueryWhereInIDs(foundOfferIds);
+        const foundEntities = await db.getEntities(getIDsWithX);
+
+        return foundEntities.map((ent) => JSON.parse(ent.entity));
+    } catch (error) {
+        logger.error("failed to get products from folder", error);
+        throw Error(error);
+    }
+}
+
 async function addFolder(_, { input }, { logger, db }) {
     const id = uuid2id(input.id);
     if (id === "") {
@@ -130,11 +154,11 @@ async function removeFromFolder(_, { input }, { logger, db }) {
     }
 }
 
-
 module.exports = {
     addFolder,
     getFolders,
     getFromFolder,
+    catalog,
     moveToFolder,
     removeFolder,
     removeFromFolder,
