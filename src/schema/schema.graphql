@@ -36,6 +36,13 @@ type Folder {
     description: String
 }
 
+type Catalog implements Node {
+    id: ID!
+    items(offset: Int, limit: Int): CatalogItem
+}
+
+union CatalogItem = Product | Folder
+
 type Query {
     books: [Book]
 
@@ -50,6 +57,7 @@ type Query {
 
     getFromFolder(subject: ID!): [ID]
     getFolders(uuIds: [ID]!): [Folder]
+    catalog(id: ID): [CatalogItem]!
 }
 
 type SuggestProduct {
@@ -70,6 +78,7 @@ input ProductInput {
     id: ID!
     title: String!
     description: String
+    price: String
 }
 
 input OfferInput {
