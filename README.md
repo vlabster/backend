@@ -16,6 +16,8 @@ make dev
 if you work with db and want to see changes use:
 make clean dev
 
+url for go to on the backend: http://localhost:4000/playground
+
 ### Environment
 
 | Name           | Description | Default |
@@ -30,4 +32,4 @@ for view table data:
 -entities
 docker exec -it backend_mysql_1 mysql -u root -pqwerty stock -e "select hex(id), type,entity from entities"
 -triples
-docker exec -it backend_mysql_1 mysql -u root -pqwerty stock -e "select id, hex(subject), predicate, hex(object), deleted from triples"
+docker exec -it backend_mysql_1 mysql -u root -pqwerty stock -e "select id, hex(subject), predicate, hex(object), deleted from triples": 
